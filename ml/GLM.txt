@@ -1,0 +1,20 @@
+How to make mean statistically sound for Array[Float] ? Taking out outlier assuming Gaussian distribution
+
+using mean +/- 3sigma and then regenerate the mean
+
+Linear Regression:
+
+Normal Solver:
+
+Ax = y
+(AX - y)^t(AX - y) = (x^t A^t - y^)*(Ax - Y) = X^t A^t A x - 2 A^tY^X
+
+Iterative Solver:
+
+f(x) = \sum_{i = 1} ^ {N} (a_i*x_i - y_i)^2
+
+where N are the number of rows
+
+
+
+

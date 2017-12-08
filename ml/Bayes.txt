@@ -1,0 +1,85 @@
+Basic probability calculations:
+
+Coin: p(h) = p 0.3 p(t) = 0.7 p(3 heads | Out of 7 passes)
+
+3h, 4t 0.3^3*0.7^4
+2h, 4t, 1h 0.3^2*0.7^
+1h, 5t, 2h
+
+All possiblities of outcome is calculated as 7C3
+
+(7 C 3 = 35) * 0.3^3 * 0.7^4
+
+Binomial distribution
+
+What's the classifier for naive bayes
+
+We have d features and say a lot of rows
+
+P(y_i / x )
+
+Given a class variable y and dependent feature vectors x_1 through x_n
+
+P(y | x1, ..., xn)= P(y)P(x1, ..., xn | y) / P(x1, ..., xn)
+
+p(x1, ..., xn | y) = \product_{i = 1} ^ { N } P(x_i | y) 
+
+Find probability of y given x1, x2, ..., xn
+
+P(y | x1, ..., xn) \proportional P(y) \product_{i = 1} ^ {N} P(x_i | y)
+
+P(y) : frequency of class y in training set
+
+There are two classes OR N classes in dataset say
+
+P(y) is frequency of class y in training set
+
+Probability density function: P(X = x|\theta)
+
+rows x1, x2, .., xn are from same N(mu, sigma) but we don't know mu
+
+Setup a likelihood equation P(x | mu, sigma) and find mu that maximizes it
+
+Likelihood equation from IID:
+
+P(x | mu, sigma) = \prod_{i = 1} ^ {n} p (x_i | mu, sigma)
+
+L(x) = 1/sqrt(2 phi sigma) \prod_{i = 1} ^ {n} exp(-(x_i - mu)^2/2*sigma^2)
+
+Find mu, sigma that maximizer L(x)
+
+If we take the log likelihood
+
+dL/dx = 0 
+
+We assume our data is drawn from two classes. On a bunch of data point we know
+their class. Based on that we want to predict P(class | x_k)
+x1, ... xn is given
+
+x1 c1
+x2 c1
+x3 c2
+x4 c1
+...
+
+xn c1
+
+P(class | xk)
+
+
+When a new data point comes, 
+
+Naive Bayes fits MAP while linear/logistic regression fits MLE
+
+Given X the design matrix which contain all x_i and theta, the probability of
+the data is:
+
+p(y | X; theta)
+
+Probabilistic interpretation:
+
+Target variables and inputs are related via the equation:
+
+y_i = theta^t x_i + e_i
+
+theta^t is dimension of features

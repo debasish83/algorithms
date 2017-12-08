@@ -1,0 +1,53 @@
+Linear SVM:
+
+min 0.5 w^t w + \sum_{i = 1} ^{ N } max(1 - w^t x_i, 0)
+
+y_i = w^t x_i + bias
+
+Kernel SVM:
+
+y_i = w*^t Phi(x_i) + bias
+
+Phi(x_i) d -> D but we cannot calculate it explicitly 
+
+Phi(x_i)^t Phi(x_i) is possible to compute since it is kernel
+matrix. Arbitrary kernels can be plugged. 
+
+n x d => n x D, D x d MLP ?
+
+y_i = w*^t n x D + bias
+
+If neural net is approximation to kernel, then it should work
+
+w^t = D
+
+min 0.5 w^t w + C \sum_{i = 1} ^ { N } epsilon_n - rho
+
+s.t w^t x_n >= 1 - e_n
+
+w = f(x)
+
+w^t w = f^t(x) f(x)
+
+One class SVM
+
+Linear:
+
+min 0.5 w^t w + \sum_{i = 1} ^{ N } max(1 - w^t x_i, 0)
+
+device:sensor* AND week1 < time < week2: Total match: 1M, Output is top 100K
+
+1M normal class: 990K, anomaly class: 10K 10K/990K
+
+100K normal class: 99870 anomaly class: 30 30/99870
+
+one class svm will get impacted ?
+
+10M x 100K x 10K x 100
+
+10M + 100K + 10K + 100 ~ O(10M + 10M)
+
+O(10M * D)
+
+Kernel:
+
