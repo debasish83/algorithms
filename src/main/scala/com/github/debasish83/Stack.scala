@@ -58,36 +58,6 @@ class Stack {
 class FullStackException extends Exception
 class EmptyStackException extends Exception
 
-// Queue adds a node to last and removes from first
-class Queue {
-  private var first: Node = _
-  private var last: Node = _
-
-  def add(item: Int): Unit = {
-    val t = new Node(item)
-    if (last != null) last.next = t
-    last = t
-    if (first == null) first = last
-  }
-
-  def remove(): Int = {
-    if (first == null) throw new NoSuchElementException
-    val data = first.data
-    first = first.next
-    if (first == null) last = null
-    data
-  }
-
-  def peek(): Int = {
-    if (first == null) throw new NoSuchElementException
-    return first.data
-  }
-
-  def isEmpty(): Boolean = {
-    return first == null
-  }
-}
-
 class MultiStack(stackSize: Int) {
   val numStacks = 3
 
@@ -201,5 +171,29 @@ object Stack {
 
     //Copy the elements from r back to s
     while (!r.isEmpty()) s.push(r.pop)
+  }
+
+  //Given an expression figure out if it has balanced braces
+  //Array('{', '}', ']', '[') : False
+  //Array('{', '[', '[', '(', ')', ']', ']', '}', '{', '}') : True
+
+  import java.util.Stack
+
+  def balancedBraces(elems: Array[Char]): Boolean = {
+    val balancedSoFar = new Stack[Char]
+    var i = 0
+    while (i < elems.length) {
+      if (elems(i) == '{' || elems(i) == '[' || elems(i) == '(')
+        balancedSoFar.push(elems(i))
+      else {
+        if (balancedSoFar.peek() == '{' && elems(i) == '}') balancedSoFar.pop()
+        else if (balancedSoFar.peek() == '[' && elems(i) == ']') balancedSoFar.pop()
+        else if (balancedSoFar.peek() == '(' && elems(i) == ')') balancedSoFar.pop()
+        else return false
+      }
+      i += 1
+    }
+    if (balancedSoFar.size() > 0) return false
+    else return true
   }
 }

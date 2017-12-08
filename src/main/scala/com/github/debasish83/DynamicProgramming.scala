@@ -1,8 +1,5 @@
 package com.github.debasish83
 
-import java.util
-import java.util.Comparator
-
 import com.github.debasish83.Recursive.{Box, BoxComparator, Point}
 
 /**
@@ -68,7 +65,7 @@ object DynamicProgramming {
     if (matrix == null || matrix.length == 0) return null
     val path = new ArrayList[Point]()
     val failed = new HashSet[Point]()
-    if (getPath(matrix, matrix.length - 1, matrix(0).length - 1, path, failed)){
+    if (getPath(matrix, matrix.length - 1, matrix(0).length - 1, path, failed)) {
       return path
     }
     return null
@@ -184,7 +181,7 @@ object DynamicProgramming {
     val stackMap = Array.fill[Int](boxes.length)(0)
     var maxHeight = 0
     var i = 0
-    while(i < boxes.length) {
+    while (i < boxes.length) {
       val height = createStack(boxes, i, stackMap)
       maxHeight = Math.max(maxHeight, height)
       i += 1
@@ -192,6 +189,5 @@ object DynamicProgramming {
     return maxHeight
   }
 
-  //Given a boolean expression consisting of synmbols 0 (false), 1 (true), &, |, ^ (XOR)
-  //The expression should be fully parenthesized
+  //Given a boolean expression consisting of symbols 0 (false), 1 (true), &, |, ^ (XOR)
 }
