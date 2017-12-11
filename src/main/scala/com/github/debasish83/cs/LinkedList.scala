@@ -1,4 +1,4 @@
-package com.github.debasish83
+package com.github.debasish83.cs
 
 /**
   * @author debasish83 on 11/14/17.
@@ -107,7 +107,7 @@ object LinkedListHelper {
     val before = new LinkedList
     val after = new LinkedList
     var iter = ll.head
-    var tail = _
+    var tail: Node = null
     while(iter != null) {
       if (iter.data < x) tail = before.add(iter.data)
       else after.add(iter.data)
@@ -155,8 +155,8 @@ object LinkedListHelper {
     if (l1 == null || l2 == null) return null
     val result1 = getTailAndSize(l1)
     val result2 = getTailAndSize(l2)
-    var shorter: Node = _
-    var longer: Node = _
+    var shorter: Node = null
+    var longer: Node = null
 
     if (result1.size < result2.size) {
       shorter = l1.head

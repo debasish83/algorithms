@@ -1,18 +1,10 @@
-package com.github.debasish83
+package com.github.debasish83.cs
 
 import java.util.ArrayList
 
 /**
   * @author debasish83 on 11/14/17.
   */
-// Example stack with Int, can be templatized
-class Node(data: Int) {
-  val next: Node = _
-}
-
-object Node {
-  def apply(data: Int): Node = new Node(data)
-}
 
 class Stack {
   private var top: Node = _
@@ -109,7 +101,7 @@ class MultiStack(stackSize: Int) {
 // pop(): 4 max = 2
 // We can add a stack with min values
 class MinStack extends Stack {
-  val mins: Stack = _
+  val mins: Stack = null
 
   override def push(item: Int): Unit = {
     if (item < min) mins.push(item)
@@ -177,10 +169,10 @@ object Stack {
   //Array('{', '}', ']', '[') : False
   //Array('{', '[', '[', '(', ')', ']', ']', '}', '{', '}') : True
 
-  import java.util.Stack
+  import java.util.{Stack => JStack}
 
   def balancedBraces(elems: Array[Char]): Boolean = {
-    val balancedSoFar = new Stack[Char]
+    val balancedSoFar = new JStack[Char]()
     var i = 0
     while (i < elems.length) {
       if (elems(i) == '{' || elems(i) == '[' || elems(i) == '(')

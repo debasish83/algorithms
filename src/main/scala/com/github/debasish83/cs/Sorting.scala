@@ -1,11 +1,12 @@
-package com.github.debasish83
+package com.github.debasish83.cs
 
 /**
   * @author debasish83 on 11/15/17.
   */
 
 import java.util.Comparator
-import .Pixel
+
+import com.github.debasish83.cs.Arrays.Pixel
 
 object Sorting {
 
@@ -259,6 +260,7 @@ object Sorting {
   }
   a.sorted(new IntOrder)
 
+  // TODO: override Pixel difference and use that to clean complex if-else
   class PixelComparator extends Comparator[Pixel] {
     override def compare(x: Pixel, y: Pixel): Int = {
       if (x.b < y.b && x.g < y.g && x.r < y.r) return -1

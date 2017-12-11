@@ -1,6 +1,4 @@
-package com.github.debasish83
-
-import com.sun.tools.classfile.Exceptions_attribute
+package com.github.debasish83.cs
 
 import scala.util.Random
 
@@ -117,7 +115,9 @@ object Hard {
     Use radix sort using a direct mapping and give the k-th element from the mapping
   */
 
-  def select(elem: Array[Int], low: Int, high: Int, k: Int)
+  def select(elem: Array[Int], low: Int, high: Int, k: Int): Int = {
+    ???
+  }
 
   def smallestKSelection(elems: Array[Int], k: Int) : Array[Int] = {
     if (k <= 0 || k > elems.length) throw new IllegalArgumentException
@@ -128,10 +128,9 @@ object Hard {
     val smallestK = Array.fill[Int](k)(0)
     var i = 0
     while(i < k) {
-      if ()
-      if (elems(i) <= elemK) smallestK(i) = elems(i)
+      if (elems(i) < elemK) smallestK(i) = elems(i)
       i += 1
     }
+    smallestK
   }
-
 }

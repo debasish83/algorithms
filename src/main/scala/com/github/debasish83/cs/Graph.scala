@@ -1,4 +1,4 @@
-package com.github.debasish83
+package com.github.debasish83.cs
 
 import scala.util.Random
 /**
@@ -14,10 +14,10 @@ import scala.util.Random
 // If binary search tree then input data < iter.data, go left otherwise go right
 class BinaryTree {
   class Node(val name: String, val data: Int) {
-    val children: Array[Node] = _
+    val children: Array[Node] = null
   }
 
-  val root: Node = _
+  val root: Node = null
 
   def visit(node: Node): Unit = {
     println(s"${node.name} ${node.data}")
@@ -253,16 +253,16 @@ class Heap(elements: Array[Int]) {
   }
 }
 
-import scala.collection.mutable.Queue
+import scala.collection.mutable.{Queue => MQueue}
 import scala.collection.mutable.Seq
 
 class Trie {
 
   class Node(val data: Int) {
-    val children: Seq[Node] = _
+    val children: Seq[Node] = null
   }
 
-  val head: Node = _
+  val head: Node = null
 
   def add(str: String): Unit = {
     if (head != null) {
@@ -277,7 +277,7 @@ class Trie {
 
 //Design graph and run BFS/DFS on it
 class GNode(val name: String, var visited : Boolean = false) {
-  val adjacent: Seq[GNode] = _
+  val adjacent: Seq[GNode] = null
 }
 
 class Graph {
@@ -304,7 +304,7 @@ object Graph {
   }
 
   def bfs(root: GNode): Unit = {
-    val queue = Queue[GNode]()
+    val queue = MQueue[GNode]()
     root.visited = true
     queue.enqueue(root)
     while (!queue.isEmpty) {
@@ -328,7 +328,7 @@ object Graph {
     }
 
     if (start == end) return true
-    val queue = Queue[GNode](start)
+    val queue = MQueue[GNode](start)
     while (!queue.isEmpty) {
       val u = queue.dequeue()
       if (u != null) {
@@ -407,14 +407,14 @@ object Tree {
   //Binary tree is a binary search tree
   //If iter.left.data < iter.data && iter.right.data > iter.data then the BST property
   //is satisfied on a specific node
-  def isBST(n: TreeNode) : Boolean = isBST(n, null, null)
+  def isBST(n: TreeNode) : Boolean = isBST(n, -1, -1)
 
   def isBST(n: TreeNode, min: Int, max: Int): Boolean = {
     if (n == null) return true
 
-    if (n.data <= min && min != null) return false
+    if (n.data <= min && min != -1) return false
 
-    if (n.data > max && max != null) return false
+    if (n.data > max && max != -1) return false
 
     if (!isBST(n.left, min, n.data)) return false
 

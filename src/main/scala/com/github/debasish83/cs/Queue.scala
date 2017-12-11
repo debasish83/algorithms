@@ -1,4 +1,4 @@
-package com.github.debasish83
+package com.github.debasish83.cs
 
 // Queue adds a node to last and removes from first
 class Queue {

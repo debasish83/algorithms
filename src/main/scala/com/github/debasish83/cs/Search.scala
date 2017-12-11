@@ -1,6 +1,6 @@
-package com.github.debasish83
+package com.github.debasish83.cs
 
-import java.util.Arrays
+import java.util.{Arrays => JArrays}
 
 /**
   * @author debasish83 on 12/3/17.
@@ -8,7 +8,7 @@ import java.util.Arrays
 
 object Search {
   def binary(elems: Array[Int], a: Int): Boolean = {
-    val index = Arrays.binarySearch(elems, 0, elems.size - 1, a)
+    val index = JArrays.binarySearch(elems, 0, elems.size - 1, a)
     if (index > 0) return true
     else return false
   }
@@ -182,7 +182,7 @@ object Search {
       val num = iter.next().toInt
       //bitField(num/8) picks the byte corresponding to the num, after that we set the nth
       //bit of a byte using OR operator
-      bitField(num / 8) |= 1 << (num % 8)
+      bitField(num / 8) = (bitField(num / 8).toInt | (1 << (num % 8))).toByte
       // num%8 is remainder we shift 1 that many time to right 01000000 and then do bitwise OR with
       // existing bits
     }
@@ -212,7 +212,7 @@ object Search {
       val len = row.length
       if (row(len - 1) < target) i += 1
       else {
-        val index = Arrays.binarySearch(row, 0, len - 1, target)
+        val index = JArrays.binarySearch(row, 0, len - 1, target)
         if (index != -1) return index
         i += 1
       }
@@ -257,7 +257,7 @@ object Search {
 
   def sortValleyPeak(elems: Array[Int]): Unit = {
     if (elems.length == 1) return
-    Arrays.sort(elems, 0, elems.length - 1)
+    JArrays.sort(elems, 0, elems.length - 1)
     var i = 1
     while (i < elems.length) {
       val left = elems(i - 1)

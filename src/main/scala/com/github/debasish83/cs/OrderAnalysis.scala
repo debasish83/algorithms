@@ -1,4 +1,4 @@
-package com.github.debasish83
+package com.github.debasish83.cs
 
 object OrderAnalysis {
   def power(a: Int, b: Int): Double = {
@@ -19,16 +19,16 @@ object OrderAnalysis {
     val guess = (left + right) / 2
     val guesssqr = guess * guess
     if (guesssqr == n) return guess
-    else (guesssqr < n) sqrt_helper(n, guess + 1, right) //higher
-    else sqrt_helper(n, min, guess - 1) //lower
+    else if (guesssqr < n) sqrt_helper(n, guess + 1, right) //higher
+    else sqrt_helper(n, left, guess - 1) //lower
   }
 
   def sqrt(n : Int): Int = sqrt_helper(n, 1, n)
 
   //Iterative version in binary search complexity
   def sqrtIterative(n: Int): Int = {
-    var left = 0
-    var right = n
+    var left: Int = 0
+    var right: Int = n
     while(right < left) {
       val guess = (left + right)/2
       val guesssqr = guess*guess
@@ -37,13 +37,14 @@ object OrderAnalysis {
       else if (guesssqr < n) left = guess + 1
       else right = guess - 1
     }
+    return -1
   }
 
   // Generate all strings of length k where the characters are in sorted order
   // First option is from 26 characters, next one is from 25, third one is from 24 and so on
   def generateSorted(k: Int): Unit = {
     val numChars = 26
-    int offset = 'a'.toInt
+    val offset = 'a'.toInt
     var i = 0
     while(i < k) {
       var j = 0
