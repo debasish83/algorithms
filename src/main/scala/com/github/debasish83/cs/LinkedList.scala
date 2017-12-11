@@ -86,7 +86,7 @@ object LinkedListHelper {
 
   // Iterative algorithm: add runner1 at head and runner2 at a distance k
   // start iterating them and when runner2 = null, return runner1
-  def deleteMiddle(n: Node): Unit = {
+  def deleteMiddle(n: Node): Boolean = {
     if (n == null || n.next == null) return false
     val next = n.next
     n.data = next.data
@@ -123,14 +123,16 @@ object LinkedListHelper {
     var runner2 = l2.head
     var carry = 0
     val result = new LinkedList
-    while (runner1 != null || runner2.data != null) {
+    while (runner1 != null || runner2 != null) {
       val sum = runner1.data + runner2.data + carry // 8 + 6 = 14 % 10 = 4
       result.add(sum / 10)
       carry = sum % 10
+      runner1 = runner1.next
+      runner2 = runner2.next
     }
     result
   }
-
+  
   // Intersection: Given two list find the reference of intersecting list
   // 3 -> 1 -> 5      4 -> 6
   //           -> 9 ->

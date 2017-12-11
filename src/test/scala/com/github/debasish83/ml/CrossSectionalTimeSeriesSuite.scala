@@ -32,7 +32,7 @@ class CrossSectionalTimeSeriesSuite extends FunSuite with ShouldMatchers {
 
   test("read and fit cross section AR model") {
     val output = "data/timeseries/"
-    val model = CrossSectionalTimeSeries.fitCrossSection(ts, 7)
+    val model = CrossSectionalTimeSeries.fit(ts, 7)
     assert(model.size == 50)
   }
 }

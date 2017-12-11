@@ -88,7 +88,7 @@ object CrossSectionalTimeSeries {
     val train = ts.mapSeries(v => v, DateTimeIndex.irregular(trainSamples))
     val test = ts.mapSeries(v => v, DateTimeIndex.irregular(testSamples))
 
-    val models = fitCrossSection(train, maxLags)
+    val models = fit(train, maxLags)
     predict(test, maxLags, models)
   }
 
@@ -139,19 +139,19 @@ object CrossSectionalTimeSeries {
     Math.sqrt(sqerr / ts.keys.length / ts.data.numRows)
   }
 
-  def fitCrossSection(ts: TimeSeries[String], maxLags: Int): Map[String, ARModel] = {
+  def fit(ts: TimeSeries[String], maxLags: Int): Map[String, ARModel] = {
     //sig1, sig1_lag1, sig1_lag2, sig2, sig2_lag2, ...
     val laggedts = ts.lags(maxLags, true, laggedCSKey)
     ts.keys.map((key) => {
-      val model = fitCrossSection(laggedts, maxLags, key, ts.keys.length)
+      val model = fit(laggedts, maxLags, key, ts.keys.length)
       (key, model)
     }).toMap
   }
 
-  def fitCrossSection(laggedts: TimeSeries[String],
-                      maxLags: Int,
-                      key: String,
-                      len: Int): ARModel = {
+  def fit(laggedts: TimeSeries[String],
+          maxLags: Int,
+          key: String,
+          len: Int): ARModel = {
     //sig1, sig1_lag1, sig1_lag2, sig2, sig2_lag2, ...
     val laggedKeys = laggedts.keys
 
