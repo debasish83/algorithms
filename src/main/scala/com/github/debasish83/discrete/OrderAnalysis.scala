@@ -1,4 +1,4 @@
-package com.github.debasish83.cs
+package com.github.debasish83.discrete
 
 object OrderAnalysis {
   def power(a: Int, b: Int): Double = {

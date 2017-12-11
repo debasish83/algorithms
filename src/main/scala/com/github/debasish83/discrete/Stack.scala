@@ -1,4 +1,4 @@
-package com.github.debasish83.cs
+package com.github.debasish83.discrete
 
 import java.util.ArrayList
 
@@ -173,19 +173,20 @@ object Stack {
 
   def balancedBraces(elems: Array[Char]): Boolean = {
     val balancedSoFar = new JStack[Char]()
+
     var i = 0
     while (i < elems.length) {
       if (elems(i) == '{' || elems(i) == '[' || elems(i) == '(')
         balancedSoFar.push(elems(i))
       else {
-        if (balancedSoFar.peek() == '{' && elems(i) == '}') balancedSoFar.pop()
-        else if (balancedSoFar.peek() == '[' && elems(i) == ']') balancedSoFar.pop()
-        else if (balancedSoFar.peek() == '(' && elems(i) == ')') balancedSoFar.pop()
+        if (elems(i) == '}' && balancedSoFar.peek == '{') balancedSoFar.pop()
+        else if (elems(i) == ']' && balancedSoFar.peek == '[') balancedSoFar.pop()
+        else if (elems(i) == ')' && balancedSoFar.peek == '(') balancedSoFar.pop()
         else return false
       }
       i += 1
     }
-    if (balancedSoFar.size() > 0) return false
+    if (balancedSoFar.size > 0) return false
     else return true
   }
 }

@@ -1,4 +1,4 @@
-package com.github.debasish83.cs
+package com.github.debasish83.discrete
 
 import scala.collection.Map
 import scala.collection.mutable.HashMap

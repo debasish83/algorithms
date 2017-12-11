@@ -1,6 +1,6 @@
-package com.github.debasish83.cs
+package com.github.debasish83.discrete
 
-import com.github.debasish83.cs.Recursive.{Box, Point, BoxComparator}
+import com.github.debasish83.discrete.Recursive.{Box, Point, BoxComparator}
 
 /**
   * @author by v606014 on 11/15/17.

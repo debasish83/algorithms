@@ -1,4 +1,4 @@
-package com.github.debasish83.cs
+package com.github.debasish83.discrete
 
 /**
   * @author debasish83 on 11/14/17.
@@ -132,7 +132,7 @@ object LinkedListHelper {
     }
     result
   }
-  
+
   // Intersection: Given two list find the reference of intersecting list
   // 3 -> 1 -> 5      4 -> 6
   //           -> 9 ->

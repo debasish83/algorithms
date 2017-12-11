@@ -1,4 +1,4 @@
-package com.github.debasish83.cs
+package com.github.debasish83.discrete
 
 /**
   * @author debasish83 on 11/15/17.
@@ -6,7 +6,7 @@ package com.github.debasish83.cs
 
 import java.util.Comparator
 
-import com.github.debasish83.cs.Arrays.Pixel
+import com.github.debasish83.discrete.Arrays.Pixel
 
 object Sorting {
 

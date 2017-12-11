@@ -1,4 +1,6 @@
-package com.github.debasish83.cs
+package com.github.debasish83.discrete
+
+import scala.collection.mutable.ArrayBuffer
 
 /**
   * Created by v606014 on 12/7/17.
@@ -384,5 +386,41 @@ object Arrays {
         Array(3, 4, 5))
     printDiagonal(matrix)
   }
+
+  //Given an array find the pair of elements that sum up to K
+  case class Pair(x: Int, y: Int)
+
+  def getPair(elems: Array[Int],
+              target: Int,
+              buffer: ArrayBuffer[Int]): Array[Int] = {
+    buffer.clear()
+    var i = 0
+    while (i < elems.length) {
+      if (elems(i) == target) buffer += elems(i)
+      i += 1
+    }
+    buffer.toArray
+  }
+
+  import scala.collection.mutable.Set
+
+  def pairSum(elems: Array[Int], K: Int): Array[Pair] = {
+    val uniquePairs = Set[Pair]()
+    val buffer = ArrayBuffer[Int]()
+
+    var i = 0
+    while (i < elems.length) {
+      val x = elems(i)
+      if (x < K) {
+        val pairs = getPair(elems, K - x, buffer)
+        if (pairs.length > 0) {
+          pairs.foreach(p => uniquePairs.add(Pair(x, p)))
+        }
+      }
+      i += 1
+    }
+    uniquePairs.toArray
+  }
 }
+
 
