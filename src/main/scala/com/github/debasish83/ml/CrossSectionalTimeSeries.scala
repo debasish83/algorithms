@@ -2,12 +2,13 @@ package com.github.debasish83.ml
 
 import com.cloudera.sparkts.{DateTimeIndex, EasyPlot, TimeSeries}
 import com.cloudera.sparkts.parsers.YahooParser
-import com.cloudera.sparkts.models.{ARModel, Autoregression, EWMA}
+import com.cloudera.sparkts.models.{ARModel, EWMA}
 import org.apache.spark.mllib.linalg.DenseVector
 import scala.io.Source
 import java.util.ArrayDeque
 import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression
 import com.github.fommil.netlib.BLAS.{getInstance => blas}
+import org.apache.spark.mllib.linalg.DenseMatrix
 
 object CrossSectionalTimeSeries {
   def read(path: String): TimeSeries[String] = {
@@ -79,9 +80,8 @@ object CrossSectionalTimeSeries {
     if (lagOrder > 0) s"lag:${key}:${lagOrder}" else key
   }
 
-  def rmse(ts: TimeSeries[String], maxLags: Int, window: Int): Double = {
+  def rmse(ts: TimeSeries[String], maxLags: Int): (Double, TimeSeries[String]) = {
     val timestamp = ts.index.toZonedDateTimeArray()
-    smoothMovingAverage(ts, window)
 
     val (testSamples, trainSamples) = timestamp.splitAt((timestamp.length * 0.2).toInt)
 
@@ -89,14 +89,42 @@ object CrossSectionalTimeSeries {
     val test = ts.mapSeries(v => v, DateTimeIndex.irregular(testSamples))
 
     val models = fit(train, maxLags)
-    predict(test, maxLags, models)
+
+    val output =
+      new DenseMatrix(test.data.numRows, test.data.numCols,
+        Array.fill[Double](test.data.values.length)(0.0))
+    val rmse = predict(test, maxLags, models, output)
+    val outputts = new TimeSeries[String](test.index, output, test.keys)
+    (rmse, outputts)
+  }
+
+  def predict(ts: TimeSeries[String], maxLags: Int, models: Map[String, ARModel],
+              output: DenseMatrix): Double = {
+    val laggedts = ts.lags(maxLags, true, laggedCSKey)
+
+    var sqerr = 0.0
+    var i = 0
+    while(i < ts.keys.length) {
+      val key = ts.keys(i)
+      val model = models(ts.keys(i))
+      val predicted = predict(laggedts, key, i, model, maxLags, ts.keys.length, output)
+      sqerr += predicted
+      i += 1
+    }
+
+    val instruments = ts.keys.length
+    val rows = ts.data.numRows
+    println(s"sqerr ${sqerr} instruments ${instruments} rows ${rows}")
+    Math.sqrt(sqerr / ts.keys.length / ts.data.numRows)
   }
 
   def predict(laggedts: TimeSeries[String],
               key: String,
+              i: Int,
               model: ARModel,
               maxLags: Int,
-              len: Int): Double = {
+              len: Int,
+              output: DenseMatrix): Double = {
     val numRows = laggedts.data.numRows
     val numCols = laggedts.data.numCols
     val laggedKeys = laggedts.keys
@@ -119,24 +147,11 @@ object CrossSectionalTimeSeries {
       }
 
       val predicted = blas.ddot(features.length, features, 1, model.coefficients, 1)
+      output.values(row * output.numCols + i) = predicted
       err += Math.pow(predicted - label, 2)
       row += 1
     }
     err
-  }
-
-  def predict(ts: TimeSeries[String], maxLags: Int, models: Map[String, ARModel]): Double = {
-    val laggedts = ts.lags(maxLags, true, laggedCSKey)
-
-    val sqerr = ts.keys.foldLeft(0.0)((err, key) => {
-      val model = models(key)
-      err + predict(laggedts, key, model, maxLags, ts.keys.length)
-    })
-    val instruments = ts.keys.length
-    val rows = ts.data.numRows
-    println(s"sqerr ${sqerr} instruments ${instruments} rows ${rows}")
-
-    Math.sqrt(sqerr / ts.keys.length / ts.data.numRows)
   }
 
   def fit(ts: TimeSeries[String], maxLags: Int): Map[String, ARModel] = {

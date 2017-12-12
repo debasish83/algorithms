@@ -1,8 +1,9 @@
 package com.github.debasish83.ml
 
-import com.cloudera.sparkts.TimeSeries
 import com.cloudera.sparkts.models.Autoregression
 import org.scalatest.{FunSuite, ShouldMatchers}
+import java.io.PrintWriter
+import java.io.File
 
 class CrossSectionalTimeSeriesSuite extends FunSuite with ShouldMatchers {
   val path = "data/timeseries/data.csv"
@@ -14,8 +15,25 @@ class CrossSectionalTimeSeriesSuite extends FunSuite with ShouldMatchers {
     ts.keys.length shouldBe 50
   }
 
-  test("rmse with smoothing") {
-    val rmse = CrossSectionalTimeSeries.rmse(ts, maxLags = 7, window = 7)
+  test("rmse without smoothing") {
+    // TODO: Smoothing did not improve RMSE
+    // CrossSectionalTimeSeries.smoothMovingAverage(ts, window = 7)
+
+    val (rmse, output) = CrossSectionalTimeSeries.rmse(ts, maxLags = 7)
+    val timestamps = output.index.toZonedDateTimeArray()
+    val writer = new PrintWriter(new File("predictions.csv"))
+    var row = 0
+    while (row < output.data.numRows) {
+      writer.print(s"${timestamps(row).toLocalDate}")
+      var col = 0
+      while (col < output.data.numCols) {
+        writer.print(s",${output.data(row, col)}")
+        col += 1
+      }
+      writer.println()
+      row += 1
+    }
+    writer.close()
     println(s"rmse for 80-20 split ${rmse}")
   }
 
