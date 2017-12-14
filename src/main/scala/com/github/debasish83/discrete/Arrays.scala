@@ -1,5 +1,7 @@
 package com.github.debasish83.discrete
 
+import org.apache.spark.ml.linalg.SparseVector
+
 import scala.collection.mutable.ArrayBuffer
 
 /**
@@ -423,4 +425,135 @@ object Arrays {
   }
 }
 
+/* Grid is seeded with a set of binary numbers */
 
+class Grid(val rows: Int,
+           val cols: Int) {
+  val data: Array[Array[Int]] = Array.ofDim[Array[Int]](rows)
+  var i = 0
+  while (i < cols) {
+    data(i) = Array.ofDim[Int](cols)
+    i += 1
+  }
+
+  def get(row: Int, col: Int): Int = {
+    if (row < 0 || row > rows - 1) return -1
+    if (col < 0 || col > cols - 1) return -1
+    data(row)(col)
+  }
+
+  def add(row: Int, col: Int, value: Int): Unit = {
+    data(row)(col) = value
+  }
+}
+
+class SimulationGame(grid: Grid) {
+  val states = new ArrayBuffer[Grid]()
+  var grids = 0
+
+  def getNeighbors(row: Int, col: Int, grid: Grid): Int = {
+    // To get the neighbors we have to traverse from row -1, col - 1 to row - 1 to col + 1
+    // (row - 1, col - 1) -> (row - 1, col + 1)
+    // (row - 1, col + 1) -> (row + 1, col + 1)
+    // (row + 1, col + 1) -> (row + 1, col - 1)
+    // (row + 1, col - 1) -> (row - 1, col - 1)
+
+    // (row - 1, col - 1) -> (row + 1, col + 1) but skip the row, col combination
+    var count = 0
+    //TODO: Add the checks if row - 1, col - 1 and row + 1
+    for (j <- col - 1 to col + 1) {
+      if (grid.get(row - 1, j) == 1) count += 1
+      if (grid.get(row + 1, j) == 1) count += 1
+    }
+    for (i <- row - 1 to row + 1) {
+      if (grid.get(i, col + 1) == 1) count += 1
+      if (grid.get(i, col - 1) == 1) count += 1
+    }
+    return count
+  }
+
+  def play(): Grid = {
+    val current = states(grids)
+    val next = new Grid(current.rows, current.cols)
+
+    var i = 0
+    while (i < current.rows) {
+      var j = 0
+      while (j < current.cols) {
+        if (getNeighbors(i, j, current) > 3) {
+          if (current.get(i, j) == 1) next.add(i, j, 0)
+          else next.add(i, j, 1)
+        }
+        j += 1
+      }
+      i += 1
+    }
+    grids += 1
+    states += next
+    next
+  }
+
+  // Given a list of unique words, find the pairs of words that, when concatenated, will form a palindrome. For example:
+  // ["gab", "cat", "bag", "alpha", "ag"] => [["gab", "bag"], ["bag", "gab"], ["gab", "ag"]]
+
+  import scala.collection.mutable.ArrayBuffer
+
+  def isPalindrome(input: String): Boolean = {
+    val reverse = input.reverse
+    if (input == reverse) return true
+    else false
+  }
+
+  val words1 = Array("gab", "cat", "bag", "alpha", "ag", "ga")
+
+  // Algorithmic steps (gab)
+  // 1. Reverse of the string (bag)
+  // 2. Front combinations from gab: bag, ag, g
+  // 3. Back combinations from bag: bag, ba, b
+
+  // gab
+  // bag, ba, b, g, ag
+
+  def generateCombinations(word: String): Set[Pair] = {
+    val reverse = word.reverse
+    //bag => bag, ag, g
+    //bag => ba
+    val back = (0 until reverse.length).map((index) => {
+      reverse.substring(index)
+    })
+
+    //bag => ba, b
+    val front = (0 until reverse.length).map((index) => {
+      reverse.substring(0, reverse.length - index)
+    })
+
+    val backPairs = back.filter((b) => isPalindrome(word + b)).map(Pair(word, _)).toSet
+    val frontPairs = front.filter((f) => isPalindrome(f + word)).map(Pair(_, word)).toSet
+
+    backPairs ++ frontPairs
+  }
+
+  val output = isPalindrome(words1)
+
+  output.foreach(println(_))
+
+  case class Pair(a: String, b: String)
+
+  def findPairs(a: String, i: Int, words: Array[String]): Array[Pair] = {
+    val buf = new ArrayBuffer[Pair]()
+    for (j <- 0 until words.length) {
+      val b = words(j)
+      if (isPalindrome(a + b)) buf += Pair(a, b)
+    }
+    buf.toArray
+  }
+
+  def isPalindrome(words: Array[String]): Array[Pair] = {
+    val uniques = (0 until words.length).flatMap { case (i) =>
+      val a = words(i)
+      findPairs(a, i, words)
+    }.toSet
+
+    return uniques.toArray
+  }
+}

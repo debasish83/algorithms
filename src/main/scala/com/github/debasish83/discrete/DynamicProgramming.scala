@@ -1,6 +1,8 @@
 package com.github.debasish83.discrete
 
-import com.github.debasish83.discrete.Recursive.{Box, Point, BoxComparator}
+import com.github.debasish83.discrete.Recursive.{Box, BoxComparator, Point}
+
+import scala.collection.mutable.ArrayBuffer
 
 /**
   * @author by v606014 on 11/15/17.
@@ -188,6 +190,4 @@ object DynamicProgramming {
     }
     return maxHeight
   }
-
-  //Given a boolean expression consisting of symbols 0 (false), 1 (true), &, |, ^ (XOR)
 }

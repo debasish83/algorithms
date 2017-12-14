@@ -1,0 +1,18 @@
+KMeans clusters:
+Start with random C clusters.
+
+Step1:
+
+For each point find the closest cluster center and assign it to the cluster center.
+
+Step2:
+
+Generate the new cluster centers as mean of all the points that got assigned to the cluster.
+
+Iterate over these 2 steps.
+
+Converge if newCenter and prevCenter sumsquared distance between them < epsilon*epsilon
+
+NMF clusters:
+
+LDA clusters:

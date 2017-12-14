@@ -80,6 +80,17 @@ object CrossSectionalTimeSeries {
     if (lagOrder > 0) s"lag:${key}:${lagOrder}" else key
   }
 
+  // Algorithmic steps
+  // 1. Using input generate lagged ts
+  // 2. Predict next step
+  // 3. Add the prediction to input
+  // 4. Go to Step 1 until steps = 0
+  def forecast(input: TimeSeries[String],
+               models: Map[String, ARModel],
+               steps: Int): TimeSeries[String] = {
+    ???
+  }
+
   def rmse(ts: TimeSeries[String], maxLags: Int): (Double, TimeSeries[String]) = {
     val timestamp = ts.index.toZonedDateTimeArray()
 

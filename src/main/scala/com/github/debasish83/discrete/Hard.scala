@@ -134,3 +134,21 @@ object Hard {
     smallestK
   }
 }
+
+class ContinuousMedian {
+
+  // Algorithm1: Insertion is fast, median extraction is O(logn) which is slow
+  // as new numbers come in 2, 3, 1, 4, 5, 3 we keep a hashSet where numbers are entered
+  // Figure out the median is a linear/binary scan, we start with linear scan
+
+  // Algorithm2: median calculation is constant time due to looking at two heaps
+  // adding element takes O(lgn)
+  // Existing median = 2,
+  def add(elem: Int) = {
+    ???
+  }
+
+  def get(): Int = {
+    ???
+  }
+}

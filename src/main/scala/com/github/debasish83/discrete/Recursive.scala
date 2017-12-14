@@ -2,7 +2,10 @@ package com.github.debasish83.discrete
 
 import java.util.Comparator
 
-import scala.collection.mutable
+import org.apache.spark.ml.linalg.SparseVector
+
+import scala.collection.{immutable, mutable}
+import scala.collection.mutable.ArrayBuffer
 
 /**
   * @author debasish83 on 12/3/17.
@@ -204,36 +207,69 @@ object Recursive {
   //We have a recursive function call paren(3, 3)
   // '(' + paren(2, 3)
   // '(' + '(' + '(' + paren(0, 3)
-  def getParentheses(list: ArrayList[String],
-                     validParentheses: Array[Char],
+  // All possible options of valid parentheses
+
+  def getParentheses(buff: ArrayBuffer[String],
+                     valid: Array[Char],
                      leftRem: Int,
                      rightRem: Int,
-                     index: Int): Unit = {
-    // This is the key invariant, rightRem should never be less than leftRem for well
-    // formed parentheses
+                     index:Int): Unit = {
+    //say we start with leftRem = 3, rightRem = 3
+    //if leftRem < rightRem then we can continue to recurse
+    //if leftRem > rightRem then we can't continue any further since the balancing criteria is broken
+
+    //I start with 3, 3,
+    //added valid(0) = '('
+    //2, 3 with index = 1
+    //0, 3
+    //I got valid = ('(', '(', '(')
+    //At this point I have to now complete the right
+    //How I will generate this combination ('(', '(', ')', ')', '(', '(')
+
+    // From (3,3) it will call (2,3) and (3, 2) that explains, Both are at validParentheses(index) = ')'
+    // But then validParentheses is kept on a stack and things are fine
+    // Basically the function calls are made on a stack
+    // (3,3) => (2, 3) and (3, 2) Since rightRem < leftRam, recurse will terminate as balancing criteria is
+    // not fulfilled
+    // (2, 3) => (1, 3) and (2, 2) Both are fine
+    // so on and so forth
+
     if (leftRem < 0 || rightRem < leftRem) return
 
-    //leftRem == 0 && rightRem == 0 we add the string to list
-    if (leftRem == 0 && rightRem == 0) list.add(new String(validParentheses))
+    if (leftRem == 0 && rightRem == 0) buff += new String(valid)
     else {
-      validParentheses(index) = '('
-      //Left recurse
-      getParentheses(list, validParentheses, leftRem - 1, rightRem, index + 1)
+      valid(index) = '('
+      getParentheses(buff, valid, leftRem - 1, rightRem, index + 1)
 
-      //TODO: I am not sure if this is index or index + 1
-      validParentheses(index) = ')'
-      getParentheses(list, validParentheses, leftRem, rightRem - 1, index + 1)
+      valid(index) = ')'
+      getParentheses(buff, valid, leftRem, rightRem - 1, index + 1)
     }
   }
 
-  def getParentheses(n: Int): ArrayList[String] = {
-    // Each string is a valid combination of parentheses '(' + '(' + ')' + ')' + '(' + '('
-    val valid = Array.fill[Char](2*n)(0x0)
-    val list = new ArrayList[String]()
-    getParentheses(list, valid, n, n, 0)
-    return list
+  def getParentheses(n: Int): Array[String] = {
+    //each valid parentheses is a char map of 2*n
+    val valid = Array.fill[Char](2 * n)(0x0)
+    val buff = new ArrayBuffer[String]()
+    getParentheses(buff, valid, n, n, 0)
+    buff.toArray
   }
 
+  //Initial array is Array('(', '{', '}', ')', '[' , ']')
+  // leftRem = 3, rightRem = 3
+  // '(' (2, 3)
+  // (3, 2)
+  def isBalanced(chars: Array[Char], leftRem: Int, rightRem: Int, index: Int) : Boolean = {
+    ???
+  }
+
+  //Given a set of parentheses '(', '{', '}', ')', '[' , ']' check if it's balanced
+  def isBalanced(parens: Array[Char]): Boolean = {
+    if (parens.length % 2 != 0) return false
+    val leftRem = parens.length % 2
+    val rightRem = leftRem
+    val index = 0
+    isBalanced(parens, leftRem, rightRem, 0)
+  }
   //Pain fill: given a screen, a point and a a colr, fill in the surrounding area till
   //the color changes from original color
   case class Color(r: Int, g: Int, b: Int)
@@ -328,6 +364,95 @@ object Recursive {
       maxHeight = Math.max(maxHeight, height)
       i += 1
     }
+  }
+
+  // Find the longest substring that's does not have duplicates in it
+  // Array (a, a, b, c)
+  // i = 0 j = i + 1, len - 1
+  import scala.collection.mutable.Set
+
+  def isDuplicated(chars: Array[Char], i: Int, j: Int): Boolean = {
+    val uniques = Set[Char]()
+    var k = i
+    while (k < j) {
+      uniques.add(chars(k))
+      k += 1
+    }
+    return uniques.size != k - i
+  }
+
+  //a is not duplicated
+  //a a is duplicated, it will return 1
+  //a b c d is not duplicated
+  //a b c d a is duplicated it will return a
+  //A character itself is not duplicated
+  def findLCS(chars: Array[Char], start: Int): Int = {
+    println(s"lcs start ${chars(start)}")
+    var j = start
+    while (j < chars.length) {
+      println(chars(j))
+      if (isDuplicated(chars, start, j)) return j - 1
+      j += 1
+    }
+    return j
+  }
+
+  // a a b c d a
+  // a = 1,
+  def findLCS(chars: Array[Char]): Array[Char] = {
+    var maxlcs: Array[Char] = null
+    var i = 0
+    while (i < chars.length) {
+      val index = findLCS(chars, i)
+      val lcs = (i until index).map(chars(_)).toArray
+      if (maxlcs == null) maxlcs = lcs
+      else if (maxlcs.length < lcs.length) maxlcs = lcs
+      println(lcs.mkString(","))
+      i += 1
+    }
+    maxlcs
+  }
+}
+
+
+// dim is an array for the max dimensions this particular shape/tensor should support
+// Array(400, 60, 30)
+class Tensor(dimensions: Array[Int]) {
+  val size = dimensions.foldLeft(0)((sum, num) => sum * num)
+  val store = Array.ofDim[Double](size)
+
+  val sps = new SparseVector(10, Array.ofDim[Int](10), Array.ofDim[Double](10))
+
+  var sum = 0.0
+  sps.foreachActive((_: Int, value: Double) => {
+    sum += value
+  })
+
+  def value(indices: Array[Int]): Double = {
+    store(indices.foldLeft(0)((sum, value) => sum * value))
+  }
+
+  def foreachActive(f: (Array[Int], Double) => Unit,
+                    dim: Int,
+                    indices: ArrayBuffer[Int]): Unit = {
+    if (indices.length == dimensions.length) {
+      val iter = indices.toArray
+      f(iter, value(iter))
+      return
+    } else {
+      for (i <- 0 until dimensions(dim)) {
+        indices += i
+        foreachActive(f, dim + 1, indices)
+        indices.remove(dim)
+      }
+    }
+  }
+
+  // This particular iterator takes a function that provides the index and element
+  // to produce a specific value
+  def foreachActive(f: (Array[Int], Double) => Unit): Unit = {
+    val indices = new ArrayBuffer[Int](dimensions.size)
+    foreachActive(f, 0, indices)
   }
 }
 

@@ -1,0 +1,16 @@
+Cooccurance
+
+Pearson correlation:
+
+First calculate the covariance matrix
+
+We want to find correlation of each feature to the label
+
+We get feature x feature covariance matrix
+
+feature x feature correlation
+
+vs
+
+label x feature correlation
+

@@ -83,3 +83,53 @@ Target variables and inputs are related via the equation:
 y_i = theta^t x_i + e_i
 
 theta^t is dimension of features
+
+Assuming each feature is a gaussian I can calculate per feature mean and stddev
+
+mean = \sum x_i / N
+
+stddev = sqrt (\sum (x_i - mean)^2 / N )
+
+This can be calculated using MultivariateOnlineSummarizer
+
+Now for prediction each feature value comes in, the pdf(v) = (1 / sqrt(2*pi)*sd)*exp(((x - mean)/2*sddev)^2)
+
+But this works if we consider each feature is independent
+
+If we are fitting a MultinomialGaussian to the data then we need to figure out mean vector and covariance
+matrix
+
+We don't have to assume per feature independence
+
+PDF = det(2pisigma)^-0.5 exp(-0.5(x-mu)'sigma^-1(x-u))
+
+First we calculate the gram matrix and then do singular value decomposition / cholesky
+
+Here we need to do eigen decomposition
+
+Covariance is calculate as A^tA for each node which is feature x feature and sum them up
+
+Gaussian Naive Bayes will be expensive due to the covariance. Bernoulli and Multinomial are
+prefereed approaches.
+
+Covariance matrix is symmetic positive definite
+
+We use eigen decomposition and get
+
+sigma = U * D * U^t
+
+sigma^-1 = U * inv(D) * U^t
+
+= (D^{-1/2} * U^t)^t * (D^{-1/2}*U^t)
+
+Using this idea now I can generate the PDF
+
+PDF = det(2pisigma)^0.5 exp(-0.5(x-mu)'sigma^-1(x-u))
+
+When a feature comes in, use that to find the probability to be in the multivariate distribution
+
+How does Bernouli and Multinomial Naive Bayes works ?
+
+
+
+
