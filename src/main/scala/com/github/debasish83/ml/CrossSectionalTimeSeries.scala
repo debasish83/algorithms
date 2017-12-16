@@ -80,16 +80,7 @@ object CrossSectionalTimeSeries {
     if (lagOrder > 0) s"lag:${key}:${lagOrder}" else key
   }
 
-  // Algorithmic steps
-  // 1. Using input generate lagged ts
-  // 2. Predict next step
-  // 3. Add the prediction to input
-  // 4. Go to Step 1 until steps = 0
-  def forecast(input: TimeSeries[String],
-               models: Map[String, ARModel],
-               steps: Int): TimeSeries[String] = {
-    ???
-  }
+  import org.apache.spark.mllib.linalg.Vector
 
   def rmse(ts: TimeSeries[String], maxLags: Int): (Double, TimeSeries[String]) = {
     val timestamp = ts.index.toZonedDateTimeArray()
@@ -115,7 +106,7 @@ object CrossSectionalTimeSeries {
 
     var sqerr = 0.0
     var i = 0
-    while(i < ts.keys.length) {
+    while (i < ts.keys.length) {
       val key = ts.keys(i)
       val model = models(ts.keys(i))
       val predicted = predict(laggedts, key, i, model, maxLags, ts.keys.length, output)
@@ -129,6 +120,75 @@ object CrossSectionalTimeSeries {
     Math.sqrt(sqerr / ts.keys.length / ts.data.numRows)
   }
 
+  // Algorithmic steps
+  // 1. Using input generate lagged ts
+  // 2. Predict next step
+  // 3. Add the prediction to input
+  // 4. Go to Step 1 until steps = 0
+  def forecast(input: TimeSeries[String],
+               models: Map[String, ARModel],
+               maxLags: Int,
+               steps: Int): Unit = {
+    val numCols = input.data.numCols
+    val numRows = input.data.numRows
+
+    val output = Array.ofDim[Double](steps*models.size)
+    val len = models.size
+
+    val features = Array.ofDim[Double](maxLags * len)
+    val predicted = Array.ofDim[Double](len)
+
+    var i = 0
+    while (i < steps) {
+      val lagged = input.lags(maxLags, true, laggedCSKey)
+      val (_, laggedts) = lagged.head()
+
+      val latest = input.index.first.plusDays(i)
+
+      predict(laggedts, lagged.keys, input.keys, maxLags, models, predicted, features)
+      println(s"${latest.toLocalDate},${predicted.mkString(",")}")
+
+      var row = 0
+      var col = 0
+      while (col < numCols) {
+        input.data.values(col) = predicted(col)
+        col += 1
+      }
+      while (row < numRows - 1) {
+        col = 0
+        // Copy the data from [row + 1, 0] [row + 1, numCols]
+        // [row, 0] [row, cols]
+        while (col < numCols) {
+          input.data.values((row + 1) * numCols + col) = input.data(row, col)
+          col += 1
+        }
+        row += 1
+      }
+      i += 1
+    }
+  }
+
+  def predict(laggedts: Vector,
+              laggedkeys: Array[String],
+              keys: Array[String],
+              maxLags: Int,
+              models: Map[String, ARModel],
+              predicted: Array[Double],
+              features: Array[Double]): Unit = {
+    var j = 0
+    laggedts.foreachActive((col, value) => {
+      if (laggedkeys(col).contains(s"lag")) features(j) = value
+      j += 1
+    })
+
+    j = 0
+    keys.foreach((key) => {
+      val model = models(key)
+      predicted(j) = blas.ddot(features.length, features, 1, model.coefficients, 1)
+      j += 1
+    })
+  }
+
   def predict(laggedts: TimeSeries[String],
               key: String,
               i: Int,
@@ -139,8 +199,8 @@ object CrossSectionalTimeSeries {
     val numRows = laggedts.data.numRows
     val numCols = laggedts.data.numCols
     val laggedKeys = laggedts.keys
+    val features = Array.ofDim[Double](maxLags * len)
 
-    val features = Array.fill[Double](maxLags * len)(0.0)
     var label = 0.0
     var err = 0.0
 

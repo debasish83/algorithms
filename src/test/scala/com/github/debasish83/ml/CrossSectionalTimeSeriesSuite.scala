@@ -5,6 +5,8 @@ import org.scalatest.{FunSuite, ShouldMatchers}
 import java.io.PrintWriter
 import java.io.File
 
+import com.cloudera.sparkts.DateTimeIndex
+
 class CrossSectionalTimeSeriesSuite extends FunSuite with ShouldMatchers {
   val path = "data/timeseries/data.csv"
   val ts = CrossSectionalTimeSeries.read(path)
@@ -52,5 +54,18 @@ class CrossSectionalTimeSeriesSuite extends FunSuite with ShouldMatchers {
     val output = "data/timeseries/"
     val model = CrossSectionalTimeSeries.fit(ts, 7)
     assert(model.size == 50)
+  }
+
+  test("forecast for n days") {
+    val timestamp = ts.index.toZonedDateTimeArray()
+
+    val (testSamples, trainSamples) = timestamp.splitAt((timestamp.length * 0.1).toInt)
+
+    val train = ts.mapSeries(v => v, DateTimeIndex.irregular(trainSamples))
+    val test = ts.mapSeries(v => v, DateTimeIndex.irregular(testSamples))
+
+    val maxLags = 7
+    val models = CrossSectionalTimeSeries.fit(train, maxLags)
+    CrossSectionalTimeSeries.forecast(test, models, maxLags, 31)
   }
 }
