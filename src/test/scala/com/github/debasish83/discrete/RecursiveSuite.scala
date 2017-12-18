@@ -4,6 +4,18 @@ import com.github.debasish83.discrete.Recursive._
 import org.scalatest.{FunSuite, ShouldMatchers}
 
 class RecursiveSuite extends FunSuite with ShouldMatchers {
+  test("denoms count") {
+    val amount = 63
+    println(makeChange(amount))
+  }
+
+  test("denoms pattern") {
+    val amount = 63
+    val patterns = makeChangePatterns(amount)
+    println(patterns.length)
+  }
+
+  /*
   test("longest unique substring") {
 
     val arr1 = Array('a', 'b', 'a', 'b', 'c', 'd', 'a')
@@ -28,4 +40,5 @@ class RecursiveSuite extends FunSuite with ShouldMatchers {
 
     assert(lcs2 === Array('a', 'b', 'c'))
   }
+  */
 }

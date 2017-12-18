@@ -299,7 +299,60 @@ object Recursive {
   //87 cents: 3 * 25 + f(87-75, Denomination = {10, 5, 1})
   //          8 * 10 + f(7, Denomination = {5, 1})
 
-  //87 for example
+  //Given a infinite number of 25, 10, 5, 1 represent n cents
+  //87 cents what are the all the possible combinations are generate those
+  //First write the recursive version and then try to re-use the computation
+  //using a hashMap or a matrix as memoization technique
+
+  //93 cents possible Options are 1 * 25 + f(93-25, Seq(10, 5, 1))
+  //All possible combinations, let's put in a buffer
+  case class Pattern(denoms: Array[Int]) {
+    override def toString(): String = denoms.mkString(",")
+  }
+
+  // pattern is the intermediate storage for the recursion
+  // patterns keep track of all the patterns found so far
+  def makeChangePatterns(amount: Int,
+                         denoms: Array[Int],
+                         index: Int,
+                         pattern: Array[Int],
+                         patterns: ArrayBuffer[Pattern]): Int = {
+    //TODO: Add recursion end, be very careful about the recursion end
+    if (index >= denoms.length - 1) {
+      // We finished one pattern at this time, update the pattern
+      patterns += Pattern(pattern)
+      println(s"XXX ${pattern.mkString(",")} XXX")
+      for (i <- 0 until pattern.length) pattern(i) = 0
+      return 1
+    }
+
+    val denomCurrent = denoms(index)
+    var i = 0
+    var ways = 0
+    while (i * denomCurrent <= amount) {
+      val amountRem = amount - i * denomCurrent
+      // Pattern should have denomCurrent and the frequency
+      pattern(index) = i
+      ways += makeChangePatterns(
+        amountRem,
+        denoms,
+        index + 1,
+        pattern,
+        patterns)
+      i += 1
+    }
+    ways
+  }
+
+  def makeChangePatterns(amount: Int): Array[Pattern] = {
+    val denoms = Array(25, 10, 5, 1)
+    // Each pattern is of size 4
+    val pattern = Array.ofDim[Int](4)
+    val patterns = ArrayBuffer[Pattern]()
+    val combs = makeChangePatterns(amount, denoms, 0, pattern, patterns)
+    patterns.toArray
+  }
+
   def makeChange(amount: Int, denoms: Array[Int], index: Int): Int = {
     if (index >= denoms.length - 1) return 1
     //last denomination
@@ -367,6 +420,17 @@ object Recursive {
   }
 
   // Find the longest substring that's does not have duplicates in it
+
+  // Longest substring of a given string with no duplicates
+
+  // Array(a, a, b, c)
+  // start = 0 a, aa, aab, aabc except a all has duplicates
+  // start = 1 a, ab, abc abc is max here
+  // start = 2 b, bc bc is max here
+
+  // Let's try to finish it closely as it is similar to longest common subsequence problem
+  // between 2 strings.
+
   // Array (a, a, b, c)
   // i = 0 j = i + 1, len - 1
   import scala.collection.mutable.Set
