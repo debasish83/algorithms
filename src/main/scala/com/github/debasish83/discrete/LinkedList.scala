@@ -46,14 +46,60 @@ class LinkedList {
   }
 }
 
-object LinkedListHelper {
+class RandomNode(d: Int) {
+  var random: RandomNode = null
+  var next: RandomNode = null
+
+  override def clone(): RandomNode = {
+    new RandomNode(d)
+  }
+}
+
+import java.util.HashMap
+
+object LinkedList {
+
+  // Clone a linked list with random as the next assignment
+  def clone(head: RandomNode): RandomNode = {
+    val nodes = new HashMap[RandomNode, RandomNode]()
+    var nhead: RandomNode = null
+    var niter: RandomNode = null
+
+    //Assign the next pointer
+    var iter = head
+    while (iter.next != null) {
+      niter = iter.clone()
+      // Keep the nhead to return back for traversal
+      if (nhead == null) nhead = niter
+      nodes.put(iter, niter)
+      niter = niter.next
+      iter = iter.next
+    }
+
+    //Assign the random pointer
+    iter = head
+    niter = nhead
+    while (iter.next != null) {
+      if (nodes.containsKey(iter.random)) {
+        niter.random = nodes.get(iter.random)
+      } else {
+        val node = iter.random.clone()
+        niter.random = node
+        nodes.put(iter.random, node)
+      }
+      iter = iter.next
+      niter = niter.next
+    }
+    nodes.clear()
+    nhead
+  }
 
   // External storage: Add a HashMap that keep duplicates and delete the references
   // No storage: one iter and one runner, at each iter we see the data and runner find the data and removes
   def deleteDuplicates(ll: LinkedList): Unit = {
     if (ll.head == null) return
     var iter = ll.head
-    while(iter.next != null) {
+    while (iter.next != null) {
       val data = iter.data
       var runner = iter
       while (runner.data != data) {
@@ -103,12 +149,13 @@ object LinkedListHelper {
 
   // Write code to partition a linked list around a value x
   case class Partition(before: LinkedList, after: LinkedList)
+
   def partition(ll: LinkedList, x: Int): Partition = {
     val before = new LinkedList
     val after = new LinkedList
     var iter = ll.head
     var tail: Node = null
-    while(iter != null) {
+    while (iter != null) {
       if (iter.data < x) tail = before.add(iter.data)
       else after.add(iter.data)
       iter = iter.next
@@ -118,7 +165,7 @@ object LinkedListHelper {
 
   // Sum two list where each node has a single digit
   // 7 -> 1 -> 6 + 5 -> 9 -> 2 = 2 -> 1 -> 9
-  def sum(l1: LinkedList, l2: LinkedList) : LinkedList = {
+  def sum(l1: LinkedList, l2: LinkedList): LinkedList = {
     var runner1 = l1.head
     var runner2 = l2.head
     var carry = 0
@@ -169,12 +216,12 @@ object LinkedListHelper {
     }
 
     var i = Math.abs(result1.size - result2.size)
-    while(i >= 0) {
+    while (i >= 0) {
       longer = longer.next
       i -= 1
     }
 
-    while(shorter != longer) {
+    while (shorter != longer) {
       shorter = shorter.next
       longer = longer.next
     }

@@ -254,14 +254,21 @@ object DynamicProgramming {
     }
     return null
   }
+
   //Optimal solution: te above solution is O(n*n), what can we do it improve it ?
 
-  // Find a subarray where ocunt of letters equals count of nu,bers
+  // Find a subarray where count of letters equals count of numbers
 
-  // a a a a 1 1 a 1 1 a a 1 a a 1 a a a a a
-  // #a Count the number of letters: 1 2 3 4 4 4 5
-  // #1 Count the number of numbers: 0 0 0 0 1 2 2
+  // a a a a 1 1 a 1 1 a a
 
-  // Let's update the earlier array with the differences
+  // Subarrays where #letter = #count
+  // a a 1 1
+  // a a 1 1 a 1
+
+  // How to find these ?
+
+  // (0, 1) (0, 2) (0, 3) (0, 4) (1, 4) (2, 4)
+
+  // (2, 4) - (0, 2) = (2, 2) which is the answer
 
 }

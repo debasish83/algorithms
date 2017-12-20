@@ -189,4 +189,152 @@ object Stack {
     if (balancedSoFar.size > 0) return false
     else return true
   }
+
+  // "{abc }abc {ab } = compiles
+
+  // "{a[b]c } => compiles
+
+  // "{ a(b)c } => compiles
+
+  // Stack { [
+  // ] } compiles
+
+  // } ] !compiles
+
+  // "{abc }abc{ab}"
+
+  val str = "{abc}abc[ab]"
+
+  println(isCompiles(str))
+
+  val str2 = "{abcd]"
+
+  println(isCompiles(str2))
+
+  val str3 = "}abc]"
+
+  println(isCompiles(str3))
+
+  def isCompiles(str: String): String = {
+
+    val stack = new Stack[Char]()
+    var i = 0
+    while(i < str.length) {
+      val char = str(i)
+
+      if (char == '{' || char == '[') stack.push(char)
+
+      if (char == '}') {
+        if (stack.size > 0) {
+          val head = stack.peek()
+          if (head == '{') stack.pop()
+          else return "!compiles"
+        }
+        else return "!compiles"
+      }
+
+      if (char == ']') {
+        if (stack.size > 0) {
+          val head = stack.peek()
+          if (head == '[') stack.pop()
+          else return "!compiles"
+        }
+        else return "!compiles"
+      }
+      i += 1
+    }
+
+    if (stack.isEmpty) return "compiles"
+    else "!compiles"
+  }
+}
+
+
+/*
+Write a method to tell me if this compiles:
+"{ somehoaiwjfsdkf }" -> compiles
+"{[]}" -> compiles
+"{[}]" -> !compiles
+"{" -> !compiles
+“{[][]}” -> compiles
+"{[{}{}][]}" -> compiles
+
+"<tag></tag>" -> compiles
+"<tag>" -> !compile
+
+"openings = List({, [, (, <tag>, <html>, <b>)
+"closings = List(}, ], ), </tag>)
+
+// str = "{abc{<tag></tag>}}"
+// return:
+List ( ("{", true),("{", true), ("<tag>", true ), ("</tag">, false) ...)
+parser(str: String): List[(String, Boolean)]
+
+def isCompiles(str: String) : Boolean = {
+  val patterns = parser(str)
+  val stack = new Stack[Char]()
+  var i = 0
+  while(i < patterns.length) {
+    val pattern = patterns(i)
+    if(pattern._2) stack.push(pattern._1) Stack({, {, "<tag>")
+    else {
+      //pattern = '</tag>'
+      val head = stack.peek() // </tag>
+      pattern._1 match {
+      case "{" => if (head != '}') return "!compiles" else stack.pop
+      case "[" => if (head != ']') return "!compiles" else stack.pop
+      case "</tag"> => if (head != '<tag>') return "!compiles else stack.pop
+    }
+    i += 1
+  }
+
+  if (stack.empty) return "compiles"
+  else return "!compiles"
+
+
+/*
+Write a method to tell me if this compiles:
+"{ somehoaiwjfsdkf }" -> compiles
+"{[]}" -> compiles
+"{[}]" -> !compiles
+"{" -> !compiles
+“{[][]}” -> compiles
+"{[{}{}][]}" -> compiles
+
+"<tag></tag>" -> compiles
+"<tag>" -> !compile
+
+"openings = List({, [, (, <tag>, <html>, <b>)
+"closings = List(}, ], ), </tag>)
+
+// str = "{abc{<tag></tag>}}"
+// return:
+List ( ("{", true),("{", true), ("<tag>", true ), ("</tag">, false) ...)
+parser(str: String): List[(String, Boolean)]
+
+def isCompiles(str: String) : Boolean = {
+  val patterns = parser(str)
+  val stack = new Stack[Char]()
+  var i = 0
+  while(i < patterns.length) {
+    val pattern = patterns(i)
+    if(pattern._2) stack.push(pattern._1) Stack({, {, "<tag>")
+    else {
+      //pattern = '</tag>'
+      val head = stack.peek() // </tag>
+      pattern._1 match {
+      case "{" => if (head != '}') return "!compiles" else stack.pop
+      case "[" => if (head != ']') return "!compiles" else stack.pop
+      case "</tag"> => if (head != '<tag>') return "!compiles else stack.pop
+    }
+    i += 1
+  }
+
+  if (stack.empty) return "compiles"
+  else return "!compiles"
+
+  // for(i <- 0 until 10) => (0 until 10).map(i => f(i))
+}
+{[
+ */
 }
