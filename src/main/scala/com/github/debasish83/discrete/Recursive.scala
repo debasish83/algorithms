@@ -435,6 +435,21 @@ object Recursive {
   // i = 0 j = i + 1, len - 1
   import scala.collection.mutable.Set
 
+  // Longest substring of a given string with no duplicates
+  // Array(a, a, b, c)
+  // Longest substring from i = 0  j = 0, j = 1, j = 2, j = 3
+  // (0, 0) (0, 1) (0,2) (0, 3)
+
+  // Longest substring from i = 1 j = 0 I don't have to check
+  // (1, 1) (1, 2) (1,3)
+
+  // But here (1,2) can be constructed from (0,1) (0, 2)
+
+  // (1,2) = (a, b)
+  // (0,1) = (a, a)
+  // (0,2) = (a, a, b)
+
+  // This is how the dynamic program builds up
   def isDuplicated(chars: Array[Char], i: Int, j: Int): Boolean = {
     val uniques = Set[Char]()
     var k = i

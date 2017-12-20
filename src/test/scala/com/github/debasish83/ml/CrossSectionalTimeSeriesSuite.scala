@@ -4,7 +4,6 @@ import com.cloudera.sparkts.models.Autoregression
 import org.scalatest.{FunSuite, ShouldMatchers}
 import java.io.PrintWriter
 import java.io.File
-
 import com.cloudera.sparkts.DateTimeIndex
 
 class CrossSectionalTimeSeriesSuite extends FunSuite with ShouldMatchers {
@@ -15,6 +14,22 @@ class CrossSectionalTimeSeriesSuite extends FunSuite with ShouldMatchers {
 
   test("read data and validate series") {
     ts.keys.length shouldBe 50
+  }
+
+  test("original series") {
+    CrossSectionalTimeSeries.plot(outputPath, "input", ts)
+  }
+
+  test("smoothed series using ma") {
+    val input = ts.mapSeries(v => v)
+    CrossSectionalTimeSeries.smoothMovingAverage(input, 7)
+    CrossSectionalTimeSeries.plot(outputPath, "smoothed", input)
+  }
+
+  test("smoothed series using ewma") {
+    val input = ts.mapSeries(v => v)
+    CrossSectionalTimeSeries.smoothEWMA(input)
+    CrossSectionalTimeSeries.plot(outputPath, "ewma", input)
   }
 
   test("rmse without smoothing") {

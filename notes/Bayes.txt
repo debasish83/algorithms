@@ -132,4 +132,3 @@ How does Bernouli and Multinomial Naive Bayes works ?
 
 
 
-

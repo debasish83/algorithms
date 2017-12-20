@@ -190,4 +190,78 @@ object DynamicProgramming {
     }
     return maxHeight
   }
+
+  // Letters and numbes: Given an array filled with letters and numbers find longest subarray with
+  // equal number of letters and numbers
+  // Given an array of characters find the longest subarray with no duplicates in it
+
+  def isDistinct(chars: Array[Char], i: Int, j: Int): Boolean = {
+    val subarr = (i until j).map(chars(_))
+    // All elements in subarray are distinct
+    if (subarr.toSet.size == j - i) return true
+    else return false
+  }
+
+  // Using brute force
+  def findLongestDistinct(elems: String): String = {
+    val chars = elems.toCharArray
+    val distinctSubs = new ArrayBuffer[String]()
+    //in place of finding the smallest we can start with the longest
+    for (i <- 0 until elems.length) {
+      for (j <- i + 1 until elems.length + 1) {
+        if (isDistinct(chars, i, j)) {
+          val str = elems.substring(i, j)
+          println(s"$i $j $str")
+          distinctSubs += str
+        }
+      }
+    }
+    // Find the longest substring from distinctSubs
+    var maxIndex = 0
+    var maxLen = distinctSubs(maxIndex).length
+
+    var i = 0
+    while (i < distinctSubs.length) {
+      val len = distinctSubs(i).length
+      if (len > maxLen) {
+        maxLen = len
+        maxIndex = i
+      }
+      i += 1
+    }
+    return distinctSubs(maxIndex)
+  }
+
+  // "abaaabbbab"
+  // One optimization is that we start with the longest array and not the shortest
+  // i = 0, j = 1, 2, 3 this is the longest array
+
+  def isEqual(chars: Array[Char], start: Int, end: Int): Boolean = {
+    // Check the logic for equal number of character and numbers
+    ???
+  }
+
+  def findLongestEqual(elems: String): String = {
+    val chars = elems.toCharArray
+    var i = chars.length
+    while(i > 1) {
+      // We are finding the longest subarray first
+      for(j <- 0 until chars.length - i) {
+        if (isEqual(chars, j, i))
+          return elems.substring(j, i)
+      }
+      i -= 1
+    }
+    return null
+  }
+  //Optimal solution: te above solution is O(n*n), what can we do it improve it ?
+
+  // Find a subarray where ocunt of letters equals count of nu,bers
+
+  // a a a a 1 1 a 1 1 a a 1 a a 1 a a a a a
+  // #a Count the number of letters: 1 2 3 4 4 4 5
+  // #1 Count the number of numbers: 0 0 0 0 1 2 2
+
+  // Let's update the earlier array with the differences
+
 }

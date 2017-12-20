@@ -26,15 +26,13 @@ object CrossSectionalTimeSeries {
     }
   }
 
-  def smoothEWMA(outputPath: String, ts: TimeSeries[String]) = {
+  def smoothEWMA(ts: TimeSeries[String]) = {
     val iter = ts.univariateKeyAndSeriesIterator()
     while (iter.hasNext) {
       val ts = iter.next()
       val model = EWMA.fitModel(ts._2)
       val smoothed = new DenseVector(Array.fill(ts._2.size)(0.0))
       model.addTimeDependentEffects(ts._2, smoothed)
-      val f = EasyPlot.ezplot(smoothed)
-      f.saveas(s"$outputPath${ts._1}_smooth.png")
     }
   }
 
@@ -315,4 +313,6 @@ object CrossSectionalTimeSeries {
     val params = regression.estimateRegressionParameters()
     params
   }
+
+
 }
