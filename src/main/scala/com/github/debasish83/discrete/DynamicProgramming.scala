@@ -1,5 +1,7 @@
 package com.github.debasish83.discrete
 
+import java.util
+
 import com.github.debasish83.discrete.Recursive.{Box, BoxComparator, Point}
 
 import scala.collection.mutable.ArrayBuffer
@@ -259,7 +261,7 @@ object DynamicProgramming {
 
   // Find a subarray where count of letters equals count of numbers
 
-  // a a a a 1 1 a 1 1 a a
+  // a a a a 1 1
 
   // Subarrays where #letter = #count
   // a a 1 1
@@ -269,6 +271,63 @@ object DynamicProgramming {
 
   // (0, 1) (0, 2) (0, 3) (0, 4) (1, 4) (2, 4)
 
-  // (2, 4) - (0, 2) = (2, 2) which is the answer
+  // subarr:  a a a a 1 1
+  // Numbers: 0 0 0 0 1 2
+  // Chars:   1 2 3 4 4 4
+  // Delta:    1 2 3 4 3 2
 
+  // 2 -> 1, 5 (1 - 5) update longest
+  // 1 -> 0,
+  // 2 -> 1, 5
+  // 3 -> 2, 4 (2 - 4) = 2 so it's not longest
+  // 4 -> 3
+
+  // 2 -> 1 Insert 1
+  // Next time 2 comes, get back 1, do 5 - 1 = 4 update max and then
+  // push 5 back to the map
+  def findDelta(elems: String): Array[Int] = {
+    val deltas = Array.ofDim[Int](elems.length)
+    var delta = 0
+    var i = 0
+    while (i < elems.length) {
+      if (elems.charAt(i).isLetter) delta += 1
+      else delta -= 1
+      deltas(i) = delta
+      i += 1
+    }
+    return deltas
+  }
+
+  import java.util.HashMap
+
+  // Find the longest subarray with equal number of letter and words
+  def findLongestEqualLinear(elems: String): String = {
+    val deltas = findDelta(elems)
+
+    // Now in the deltas we check which delta has largest span
+    val map = new HashMap[Int, Int]()
+
+    // We are strictly increasing and so once the entry goes in the map
+    // we just have to check if the new entry is changing global index
+    val span = Array.ofDim[Int](2)
+
+    map.put(0, -1)
+    for (i <- 0 until deltas.length) {
+      // If map does not have any entry for the specific delta add it in
+      val delta = deltas(i)
+      if (!map.containsKey(delta)) map.put(delta, i)
+      else {
+        //get the last index for the delta
+        val currIndex = map.get(delta)
+        val distance = i - currIndex
+        val longest = span(1) - span(0)
+
+        if (longest < distance) {
+          span(0) = currIndex
+          span(1) = i
+        }
+      }
+    }
+    elems.substring(span(0) + 1, span(1))
+  }
 }

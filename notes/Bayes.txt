@@ -130,5 +130,5 @@ When a feature comes in, use that to find the probability to be in the multivari
 
 How does Bernouli and Multinomial Naive Bayes works ?
 
-P(C_i | x 
+P(C_i | x ) = P(C_i) P (x | C_i) / p(x)
 

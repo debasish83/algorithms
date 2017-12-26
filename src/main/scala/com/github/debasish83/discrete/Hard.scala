@@ -1,5 +1,7 @@
 package com.github.debasish83.discrete
 
+import java.util
+
 import scala.util.Random
 
 /**
@@ -24,7 +26,7 @@ object Hard {
   // is provided
   def shuffleCards(cards: Array[Int]): Unit = {
     var i = 0
-    while(i < cards.length) {
+    while (i < cards.length) {
       val index = Random.nextInt(i)
       val tmp = cards(index)
       cards(index) = cards(i)
@@ -44,7 +46,7 @@ object Hard {
     Arrays.sort(elems)
     val kelems = Array.fill[Int](k)(0)
     var i = 0
-    while(i < k){
+    while (i < k) {
       kelems(i) = elems(i)
       i += 1
     }
@@ -119,7 +121,7 @@ object Hard {
     ???
   }
 
-  def smallestKSelection(elems: Array[Int], k: Int) : Array[Int] = {
+  def smallestKSelection(elems: Array[Int], k: Int): Array[Int] = {
     if (k <= 0 || k > elems.length) throw new IllegalArgumentException
 
     //select the element with rank = k
@@ -127,7 +129,7 @@ object Hard {
 
     val smallestK = Array.fill[Int](k)(0)
     var i = 0
-    while(i < k) {
+    while (i < k) {
       if (elems(i) < elemK) smallestK(i) = elems(i)
       i += 1
     }
@@ -135,6 +137,159 @@ object Hard {
   }
 
   // Missing number:
+
+  //Count of 2s: Method to count number of 2s between 0 and n
+  // 0 , 1232 1232 has 2 2's
+
+  def numberOf2s(i: Int): Int = {
+    var count = 0
+    var k = i
+    while (k > 0) {
+      if (k % 10 == 2) count += 1
+      k = k / 10
+    }
+    count
+  }
+
+  def numberOf2sRange(n: Int): Int = {
+    var count = 0
+    for (i <- 2 until n) {
+      count += numberOf2s(i)
+    }
+    count
+  }
+
+  //Optimized solution
+  //112 just scan each one as a string and check if there is 2 in it :-)
+  //Make a character array of size based on N
+
+  //Iterate through each digit in the number of count 2, do it through maths OR
+  //do it through string
+
+  //Baby names; List of baby names and their frequencies
+  //There is also a synonym list
+  //Names: John(15), Jon(12), Chris(13), Kris(4), Christopher(19)
+  //Synonyms: (Jon, John), (John, Johnny), ...
+
+  //First we build a map for Jon -> John, John -> Johnny,... then we traverse the map and
+  //generate connected components to find true popular
+
+  import java.util.HashMap
+  import java.util.HashSet
+
+  import scala.collection.JavaConverters._
+
+  class GraphException extends Exception
+
+  class Graph {
+    // We will maintain an adjacency list for each name
+    val adjList = new HashMap[String, Array[String]]()
+    val frequencies = new HashMap[String, Int]()
+
+    def addNode(name: String, frequency: Int): Boolean = {
+      if (adjList.containsKey(name)) return false
+      ???
+    }
+
+    def addEdge(node1: String, node2: String): Unit = {
+      ???
+    }
+
+    def getNeighbors(name: String): Array[String]
+
+    def getNodes: Iterator[String] = {
+      adjList.keySet().iterator().asScala
+    }
+
+    def getData(node: String): Int = {
+      if (frequencies.containsKey(node)) frequencies.get(node)
+      else -1
+    }
+  }
+
+  def constructGraph(names: Map[String, Int]): Graph = {
+    val graph = new Graph()
+    names.foreach(name => graph.addNode(name._1, name._2))
+    graph
+  }
+
+  import java.util.Stack
+
+  // We use a stack to do the DFS recursion
+  def getComponentFrequency(graph: Graph, node: String, visited: HashSet[String]): Int = {
+    var sum = 0
+    val stack = new Stack[String]()
+    stack.push(node)
+    while (stack.isEmpty) {
+      val node = stack.pop()
+      sum += graph.getData(node)
+      val neighbors = graph.getNeighbors(node)
+      for (i <- 0 until neighbors.length) {
+        if (!visited.contains(neighbors(i))) stack.push(neighbors(i))
+      }
+    }
+    return sum
+  }
+
+  //First we create nodes with all the names and then connect the edges
+  def getPopular(names: Map[String, Int], synonyms: Map[String, String]): HashMap[String, Int] = {
+    val graph = constructGraph(names)
+    synonyms.foreach(edge => graph.addEdge(edge._1, edge._2))
+
+    // For connected component analysis, let's start a per component frequency calculation
+    val visited = new HashSet[String]()
+    val rootNames = new HashMap[String, Int]()
+
+    val iter = graph.getNodes
+    while (iter.hasNext) {
+      val node = iter.next()
+      if (!visited.contains(node)) {
+        val frequency = getComponentFrequency(graph, node, visited)
+        rootNames.put(node, frequency)
+        visited.add(node)
+      }
+    }
+    rootNames
+  }
+
+  // Circus tower: There are a collection of people with height and widht. Max people in the tower
+
+  case class Person(height: Int, weight: Int) extends Comparator[Person] {
+    override def compare(o1: Person, o2: Person): Int = {
+      o1.height - o2.height
+    }
+  }
+
+  def longestIncreasing(persons: Array[Person]): Array[Person] = {
+
+    ???
+  }
+
+  // i = 0, i < str.length/2 (odd, even) n/2
+  // (0, 5) => (1, 4) => (2, 3)
+  // Do a dynamic programming formulation ? (0, 5) (2, 3) and (1,4)
+  // a b a c a
+  // 
+  def isPalindromeLinear(str: String,
+                         memoize: Set[String]): Boolean = {
+    val len = str.length/2
+    var i = 0
+    while(i < len) {
+      val start = i
+      val end = str.length - i
+
+      if (str(start) == str(end)) {
+        i += 1
+
+      }
+      val substr = str.substring(start, end)
+      if (memoize.contains(substr)) return true
+      else {
+
+      }
+    }
+    ???
+  }
 }
 
 class ContinuousMedian {
