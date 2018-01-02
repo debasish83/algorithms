@@ -2,6 +2,7 @@ package com.github.debasish83.discrete
 
 import java.util
 
+import scala.collection.mutable.ArrayBuffer
 import scala.util.Random
 
 /**
@@ -260,9 +261,114 @@ object Hard {
     }
   }
 
-  def longestIncreasing(persons: Array[Person]): Array[Person] = {
+  import java.util.ArrayList
+
+
+  def canAppend(buf: ArrayBuffer[Person], htwt: Person): Boolean = {
+    ???
+  }
+
+  //13, 14, 10, 12, 15
+  //13, 14, 15
+  //10, 12
+  def longestWeightSeq(persons: Array[Person],
+                       buf: ArrayBuffer[Person],
+                       index: Int): Array[Person] = {
+    // TODO: Add recursion end
+    if (index >= persons.length) {
+      val pattern = buf.toArray
+      buf.clear()
+      return pattern
+    }
+
+    val htwt = persons(index)
+
+    // buf has set of Person in it, we want to use the same buf generating all the
+    // possibilities with increasing weight
+    var appended: Array[Person] = null
+
+    // Let the weights be 13, 14, 10, 12, 15
+    // 13, Array(14, 10, 15, 12)
+
+    // (13, 14), Array(10, 15, 12)
+
+    //At this point I need to start another recursion with 10
+    if (canAppend(buf, htwt)) {
+      buf += htwt
+      appended = longestWeightSeq(persons, buf, index + 1)
+    }
 
     ???
+  }
+
+  // longest increasing in height and weight
+  // recursive algorithm is going to O(2^n), it's better to think on dynamic programming
+  // line
+  def longestIncreasing(persons: Array[Person]): Array[Person] = {
+    val heightSorted = persons.sorted
+
+    //First we sort by height and then we find a sequence of increasing weights
+    //such that the added weight is lesser than current weight
+
+    val weightBuf = new ArrayBuffer[Person]()
+
+    val weightSeq = longestWeightSeq(heightSorted, weightBuf, 0)
+    //Once we have sorted in height, then we have to find a sequence of increasing
+    //weights and add the person in a sequence
+    ???
+  }
+
+  // Iterative version
+  // A: 13, 14, 10, 11, 12
+  // If we have longest subsequence that terminates with A(0) till A(3), can we find longest subsequence
+  // at A(4)
+  // Longest subsequence ending at A(0): 13
+  // Longest subsequence ending at A(1): 13, 14
+  // Longest subsequence ending at A(2): 10
+  // Longest subsequence ending at A(3): 10, 11
+  // Longest subsequence ending at A(4): 10, 11, 12
+
+  // Sometime for DP one array is sufficient, other cases we may need a 2D array for keeping
+  // both indices
+
+
+  def canAppend(buf: Array[Person], htwt: Person): Boolean = {
+    ???
+  }
+
+  def bestSeqAtIndex(persons: Array[Person],
+                     solutions: Array[Array[Person]],
+                     index: Int): Array[Person] = {
+    var bestSeq: Array[Person] = Array.empty[Person]
+    val htwt = persons(index)
+    for(i <- 0 until index) {
+      val solution = solutions(i)
+      if (canAppend(solution, htwt)) {
+        bestSeq = max(solution, bestSeq)
+      }
+    }
+    
+    bestSeq.clone() + htwt
+    ???
+  }
+
+  def max(left: Array[Person], right: Array[Person]): Array[Person] = {
+    ???
+  }
+
+  def longestIncreasingIterative(persons: Array[Person]): Array[Person] = {
+    val sorted = persons.sorted
+
+    // We need to create a sequence for each index
+    val solutions = Array.ofDim[ArrayBuffer[Person]](persons.length)
+    var longestSeq: Array[Person] = null
+
+    for(i <- 0 until persons.length) {
+      val bestAtIndex = bestSeqAtIndex(sorted, solutions, i)
+      solutions(i) = bestAtIndex
+      longestSeq = max(longestSeq, bestAtIndex)
+    }
+    longestSeq
   }
 
   // i = 0, i < str.length/2 (odd, even) n/2
