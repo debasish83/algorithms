@@ -1,12 +1,10 @@
 package com.github.debasish83.discrete
 
-import java.util
-
-import scala.collection.mutable.ArrayBuffer
+import scala.collection.mutable.Set
 import scala.util.Random
 
 /**
-  * @author v606014 on 12/4/17.
+  * @author debasish83 on 12/4/17.
   */
 
 object Hard {
@@ -196,7 +194,9 @@ object Hard {
       ???
     }
 
-    def getNeighbors(name: String): Array[String]
+    def getNeighbors(name: String): Array[String] = {
+      ???
+    }
 
     def getNodes: Iterator[String] = {
       adjList.keySet().iterator().asScala
@@ -257,69 +257,92 @@ object Hard {
 
   case class Person(height: Int, weight: Int) extends Comparator[Person] {
     override def compare(o1: Person, o2: Person): Int = {
-      o1.height - o2.height
+      // heights are not equal, sort based on height
+      if (o1.height != o2.height) return o1.height - o2.height
+      // if heights are equal, sort based on weight
+      o1.weight - o2.weight
     }
-  }
 
-  import java.util.ArrayList
-
-
-  def canAppend(buf: ArrayBuffer[Person], htwt: Person): Boolean = {
-    ???
+    def before(p: Person): Boolean = {
+      if (height < p.height && weight < p.weight) return true
+      else false
+    }
   }
 
   //13, 14, 10, 12, 15
   //13, 14, 15
   //10, 12
-  def longestWeightSeq(persons: Array[Person],
-                       buf: ArrayBuffer[Person],
-                       index: Int): Array[Person] = {
-    // TODO: Add recursion end
-    if (index >= persons.length) {
-      val pattern = buf.toArray
-      buf.clear()
-      return pattern
-    }
 
-    val htwt = persons(index)
+  // persons is sorted array based on height and weight
+  // First sort by height and then by weight
+  // Now let's see the sort order on the weight
+  // 13, 14, 10, 12, 15
+  // index = 0 , buf is empty, 13 can be added to buf
+  // index = 1 , add(14, buf = {13}) if it can be added, then add 14 and continue
+  // index = 2,  add(10, buf = {13, 14}) 10 can't be added so start another call with 10
 
-    // buf has set of Person in it, we want to use the same buf generating all the
-    // possibilities with increasing weight
-    var appended: Array[Person] = null
+  import java.util.ArrayList
 
-    // Let the weights be 13, 14, 10, 12, 15
-    // 13, Array(14, 10, 15, 12)
-
-    // (13, 14), Array(10, 15, 12)
-
-    //At this point I need to start another recursion with 10
-    if (canAppend(buf, htwt)) {
-      buf += htwt
-      appended = longestWeightSeq(persons, buf, index + 1)
-    }
-
-    ???
+  // Returns the largest increasing sequence
+  def longestWeightRecurse(persons: Array[Person]): ArrayList[Person] = {
+    val sorted = persons.sorted
+    val index = 0
+    val buf = new ArrayList[Person]()
+    longestWeightRecurse(sorted, buf, index)
   }
 
-  // longest increasing in height and weight
-  // recursive algorithm is going to O(2^n), it's better to think on dynamic programming
-  // line
-  def longestIncreasing(persons: Array[Person]): Array[Person] = {
-    val heightSorted = persons.sorted
+  def longestWeightRecurse(persons: Array[Person],
+                           buf: ArrayList[Person],
+                           index: Int): ArrayList[Person] = {
+    if (index >= persons.length) {
+      return buf
+    }
+    val htwt = persons(index)
+    var seqWithAdd: ArrayList[Person] = null
 
-    //First we sort by height and then we find a sequence of increasing weights
-    //such that the added weight is lesser than current weight
+    // 13 14 12 10 15
+    // buf = (13, 14)
+    // index = 2, 12 12 can't be added to buf
+    // buf, index + 1
+    // index = 2 12 if 12 can be added to buf then create a new buf
 
-    val weightBuf = new ArrayBuffer[Person]()
+    // 12 it can't add and so it need to start another one
+    if (canAdd(buf, htwt)) {
+      val bufAdded = buf.clone().asInstanceOf[ArrayList[Person]]
+      bufAdded.add(htwt)
+      seqWithAdd = longestWeightRecurse(persons, bufAdded, index + 1)
+    }
+    val seqWithoutAdd = longestWeightRecurse(persons, buf, index + 1)
 
-    val weightSeq = longestWeightSeq(heightSorted, weightBuf, 0)
-    //Once we have sorted in height, then we have to find a sequence of increasing
-    //weights and add the person in a sequence
-    ???
+    // Find the max within seqWithAdd and seqWithoutAdd, return the max
+    if (seqWithAdd == null || seqWithoutAdd.size > seqWithAdd.size) {
+      return seqWithoutAdd
+    } else {
+      return seqWithAdd
+    }
+  }
+
+  def canAdd(buf: ArrayList[Person], htwt: Person): Boolean = {
+    //this case should not come
+    if (buf == null) return false
+    //base case: no elements in the buffer
+    if (buf.isEmpty) return true
+
+    // If it can add then it will recurse
+    // it will recurse with new one
+    // recurse with 13, recurse with 14, recurse with 10 so on and so forth
+    // At each point it goes 2 options: 2^n horrible algorithm
+    val last = buf.get(buf.size - 1)
+    last.before(htwt)
   }
 
   // Iterative version
   // A: 13, 14, 10, 11, 12
+  // Longest increasing ending at A(0) = 13
+  // Longest increasing at A(1) = 13, 14
+  // We can keep the last element and index on heap to get logn in place of linear scan
+  // Longest increasing at A(2) = max (Longest increasing at A(0) + elems(2), Longest increasing at A(1) + elems(2))
+
   // If we have longest subsequence that terminates with A(0) till A(3), can we find longest subsequence
   // at A(4)
   // Longest subsequence ending at A(0): 13
@@ -328,54 +351,110 @@ object Hard {
   // Longest subsequence ending at A(3): 10, 11
   // Longest subsequence ending at A(4): 10, 11, 12
 
-  // Sometime for DP one array is sufficient, other cases we may need a 2D array for keeping
-  // both indices
-
-
-  def canAppend(buf: Array[Person], htwt: Person): Boolean = {
-    ???
+  // For Dynamic programming there are two possibilities
+  // A subproblem is defined at each index of the sequence
+  // A subproblem is defined at index_i and index_j of the sequence
+  def max(left: ArrayList[Person], right: ArrayList[Person]): ArrayList[Person] = {
+    if (left == null) return right
+    else if (right == null) return left
+    if (left.size > right.size) return left
+    else return right
   }
 
-  def bestSeqAtIndex(persons: Array[Person],
-                     solutions: Array[Array[Person]],
-                     index: Int): Array[Person] = {
-    var bestSeq: Array[Person] = Array.empty[Person]
+  def longestAtIndex(persons: Array[Person],
+                     solutions: Array[ArrayList[Person]],
+                     index: Int): ArrayList[Person] = {
     val htwt = persons(index)
-    for(i <- 0 until index) {
+    var bestIncreasing: ArrayList[Person] = null
+    // TODO: find the closest head from the htwt using a heap that maintain element
+    // and index. For now we do a linear scan
+    for (i <- 0 until index) {
       val solution = solutions(i)
-      if (canAppend(solution, htwt)) {
-        bestSeq = max(solution, bestSeq)
+      if (canAdd(solution, htwt)) {
+        bestIncreasing = max(bestIncreasing, solution)
       }
     }
-    
-    bestSeq.clone() + htwt
-    ???
+    val appendedBest = bestIncreasing.clone().asInstanceOf[ArrayList[Person]]
+    appendedBest.add(htwt)
+    appendedBest
   }
 
-  def max(left: Array[Person], right: Array[Person]): Array[Person] = {
-    ???
-  }
-
-  def longestIncreasingIterative(persons: Array[Person]): Array[Person] = {
+  def longestIncreasingIterative(persons: Array[Person]): ArrayList[Person] = {
     val sorted = persons.sorted
 
-    // We need to create a sequence for each index
-    val solutions = Array.ofDim[ArrayBuffer[Person]](persons.length)
-    var longestSeq: Array[Person] = null
+    val solutions = Array.ofDim[ArrayList[Person]](persons.length)
+    var bestSequence: ArrayList[Person] = null
 
-    for(i <- 0 until persons.length) {
-      val bestAtIndex = bestSeqAtIndex(sorted, solutions, i)
+    for (i <- 0 until persons.length) {
+      val bestAtIndex = longestAtIndex(sorted, solutions, i)
       solutions(i) = bestAtIndex
-      longestSeq = max(longestSeq, bestAtIndex)
+      bestSequence = max(bestAtIndex, bestSequence)
     }
-    longestSeq
+    return bestSequence
+  }
+
+
+  // Dynamic programming formulation for
+  // 1. Longest distinct subsequence
+  // 2. Longest palindrome
+
+  // 1. Longest substring with no duplicates
+  // Longest substring of a given string with no duplicates
+  // Array(a, a, b, c)
+  // Longest substring from i = 0  j = 0, j = 1, j = 2, j = 3
+  // (0, 0) (0, 1) (0,2) (0, 3)
+
+  // Longest substring from i = 1 j = 0 I don't have to check
+  // (1, 1) (1, 2) (1,3)
+
+  // But here (1,2) can be constructed from (0,1) (0, 2)
+
+  // (1,2) = (a, b)
+  // (0,1) = (a, a)
+  // (0,2) = (a, a, b)
+
+  // This is how the dynamic program builds up
+
+  // For the dynamic program build-up
+  // (a, a, b, c)
+  // Longest distinct at index=0 a
+  // Longest distinct at index=1 f (a, a) a
+  // Longest distinct at index=2 a + b, a + b Pick one of them
+  // Longest distinct at index = 3 a + c, a + c, a + b + c => a + b + c
+  // How do we check ? Use an charMap that maintains true/false which is O(1) complexity
+
+  def findLongestDistinctDynamic(str: String): String = {
+    ???
+  }
+
+  def isDistinct(str: String, start: Int, end: Int): Boolean = {
+    ???
+  }
+
+  def findLongestDistinct(str: String): String = {
+    var max: String = null
+    var maxLen: Int = -1
+
+    for (i <- 0 until str.length) {
+      val startIndex = i
+      for (j <- startIndex until str.length) {
+        if (isDistinct(str, i, j)) {
+          val len = j - i
+          if (maxLen > len) {
+            maxLen = len
+            max = str.substring(i, j)
+          }
+        }
+      }
+    }
+    return max
   }
 
   // i = 0, i < str.length/2 (odd, even) n/2
   // (0, 5) => (1, 4) => (2, 3)
   // Do a dynamic programming formulation ? (0, 5) (2, 3) and (1,4)
   // a b a c a
-  // 
+
   def isPalindromeLinear(str: String,
                          memoize: Set[String]): Boolean = {
     val len = str.length/2
