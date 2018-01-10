@@ -284,13 +284,14 @@ object Hard {
   import java.util.ArrayList
 
   // Returns the largest increasing sequence
+  /*
   def longestWeightRecurse(persons: Array[Person]): ArrayList[Person] = {
     val sorted = persons.sorted
     val index = 0
     val buf = new ArrayList[Person]()
     longestWeightRecurse(sorted, buf, index)
   }
-
+  */
   def longestWeightRecurse(persons: Array[Person],
                            buf: ArrayList[Person],
                            index: Int): ArrayList[Person] = {
@@ -379,6 +380,7 @@ object Hard {
     appendedBest
   }
 
+  /*
   def longestIncreasingIterative(persons: Array[Person]): ArrayList[Person] = {
     val sorted = persons.sorted
 
@@ -392,89 +394,7 @@ object Hard {
     }
     return bestSequence
   }
-
-
-  // Dynamic programming formulation for
-  // 1. Longest distinct subsequence
-  // 2. Longest palindrome
-
-  // 1. Longest substring with no duplicates
-  // Longest substring of a given string with no duplicates
-  // Array(a, a, b, c)
-  // Longest substring from i = 0  j = 0, j = 1, j = 2, j = 3
-  // (0, 0) (0, 1) (0,2) (0, 3)
-
-  // Longest substring from i = 1 j = 0 I don't have to check
-  // (1, 1) (1, 2) (1,3)
-
-  // But here (1,2) can be constructed from (0,1) (0, 2)
-
-  // (1,2) = (a, b)
-  // (0,1) = (a, a)
-  // (0,2) = (a, a, b)
-
-  // This is how the dynamic program builds up
-
-  // For the dynamic program build-up
-  // (a, a, b, c)
-  // Longest distinct at index=0 a
-  // Longest distinct at index=1 f (a, a) a
-  // Longest distinct at index=2 a + b, a + b Pick one of them
-  // Longest distinct at index = 3 a + c, a + c, a + b + c => a + b + c
-  // How do we check ? Use an charMap that maintains true/false which is O(1) complexity
-
-  def findLongestDistinctDynamic(str: String): String = {
-    ???
-  }
-
-  def isDistinct(str: String, start: Int, end: Int): Boolean = {
-    ???
-  }
-
-  def findLongestDistinct(str: String): String = {
-    var max: String = null
-    var maxLen: Int = -1
-
-    for (i <- 0 until str.length) {
-      val startIndex = i
-      for (j <- startIndex until str.length) {
-        if (isDistinct(str, i, j)) {
-          val len = j - i
-          if (maxLen > len) {
-            maxLen = len
-            max = str.substring(i, j)
-          }
-        }
-      }
-    }
-    return max
-  }
-
-  // i = 0, i < str.length/2 (odd, even) n/2
-  // (0, 5) => (1, 4) => (2, 3)
-  // Do a dynamic programming formulation ? (0, 5) (2, 3) and (1,4)
-  // a b a c a
-
-  def isPalindromeLinear(str: String,
-                         memoize: Set[String]): Boolean = {
-    val len = str.length/2
-    var i = 0
-    while(i < len) {
-      val start = i
-      val end = str.length - i
-
-      if (str(start) == str(end)) {
-        i += 1
-
-      }
-      val substr = str.substring(start, end)
-      if (memoize.contains(substr)) return true
-      else {
-
-      }
-    }
-    ???
-  }
+  */
 }
 
 class ContinuousMedian {

@@ -3,12 +3,10 @@ package com.github.debasish83.discrete
 /**
   * @author debasish83 on 11/15/17.
   */
-
 import java.util.Comparator
-
 import com.github.debasish83.discrete.Arrays.Pixel
 
-object Sorting {
+object Sort {
 
   // For bubble do the loop go from i = 0, j = i ?
   // i = 0, j = 0, j=1, j=2,...

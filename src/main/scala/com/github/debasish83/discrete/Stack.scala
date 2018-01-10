@@ -200,7 +200,7 @@ object Stack {
   import java.util.Stack
 
   def isCompiles(str: String): String = {
-    val stack = new Stack[Char]()
+    val stack = new JStack[Char]()
     var i = 0
     while(i < str.length) {
       val char = str(i)

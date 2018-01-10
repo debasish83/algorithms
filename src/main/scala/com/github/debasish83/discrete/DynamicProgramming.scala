@@ -1,18 +1,16 @@
 package com.github.debasish83.discrete
 
-import java.util
-
 import com.github.debasish83.discrete.Recursive.{Box, BoxComparator, Point}
-
 import scala.collection.mutable.ArrayBuffer
 
 /**
-  * @author by v606014 on 11/15/17.
+  * @author debasish83 on 11/15/17.
   */
 
 //Dynamic programming algorithms mainly focus on taking a recursive algorithm and find
 //the overlapping subproblems which are repeated calls. After that we can cache them for
 //future recursive calls
+
 object DynamicProgramming {
   def fib(n: Int): Int = {
     if (n == 0 || n == 1) return n
@@ -330,4 +328,185 @@ object DynamicProgramming {
     }
     elems.substring(span(0) + 1, span(1))
   }
+
+
+  // Dynamic programming formulation for
+  // 1. Longest distinct sub-sequence
+  // 2. Longest palindrome
+
+  // 1. Longest substring with no duplicates
+  // Longest substring of a given string with no duplicates
+  // Array(a, a, b, c)
+  // Longest substring from i = 0  j = 0, j = 1, j = 2, j = 3
+  // (0, 0) (0, 1) (0,2) (0, 3)
+
+  // Longest substring from i = 1 j = 0 I don't have to check
+  // (1, 1) (1, 2) (1,3)
+
+  // But here (1,2) can be constructed from (0,1) (0, 2)
+
+  // (1,2) = (a, b)
+  // (0,1) = (a, a)
+  // (0,2) = (a, a, b)
+
+  // This is how the dynamic program builds up
+
+  // For the dynamic program build-up
+  // (a, a, b, c)
+  // Longest distinct at index=0 a
+  // Longest distinct at index=1 f (a, a) a
+  // Longest distinct at index=2 a + b, a + b Pick one of them
+  // Longest distinct at index = 3 a + c, a + c, a + b + c => a + b + c
+  // How do we check ? Use an charMap that maintains true/false which is O(1) complexity
+  def findLongestDistinctDynamic(str: String): String = {
+    ???
+  }
+
+  def isDistinct(str: String, start: Int, end: Int): Boolean = {
+    ???
+  }
+
+  def findLongestDistinct2(str: String): String = {
+    var max: String = null
+    var maxLen: Int = -1
+
+    for (i <- 0 until str.length) {
+      val startIndex = i
+      for (j <- startIndex until str.length) {
+        if (isDistinct(str, i, j)) {
+          val len = j - i
+          if (maxLen > len) {
+            maxLen = len
+            max = str.substring(i, j)
+          }
+        }
+      }
+    }
+    return max
+  }
+
+
+  // Find the largest palindrome
+  // (a b a c a b)
+  // Longest palindrome at index=0 a
+  // Longest palindrome at index=1 a, b both possible, keep both
+  // Longest palindrome at index=2 (a, a) is palindrome
+  // This logic won't work for palindrome
+
+  // Longest palindrome in a string
+  // (0,0) -> a (1,1) -> b (2,2) -> a (3,3) -> c (4,4) -> a (5,5) -> b
+  // (0,1) ->  (1,2) (2, 3) (3, 4) (4, 5)
+  // (0,2) -> (0,0) (a)  1 (b) (2,2) (a) (1, 3) -> (2,4) (3, 5)
+  // (1, 3)
+  // (2, 4)
+  // (3, 5)
+  // (0,3) -> a b a c elems(0) == elem(3) && isPalindrome(1,2)
+  // (1,4) -> b a c a
+  // (2,5) -> a c a b
+  // (0, 4)
+  // (1, 5) -> elems(1) == elems(5) && isPalindrome(2, 4) O(n*n-1/2)
+
+  // for(dist <- 0 till str.length) {
+  //  for (i <- 0 till str.length - dist) {
+  //    Populate the palindromeMap (i, i + dist)
+  //  }
+  // }
+
+  // i = 0, i < str.length/2 (odd, even) n/2
+  // (0, 5) => (1, 4) => (2, 3)
+  // Do a dynamic programming formulation ? (0, 5) (2, 3) and (1,4)
+  // a b a c a
+
+  // These are mutable hashmap and set
+  import scala.collection.mutable.Set
+
+  case class Pair(i: Int, j: Int)
+
+  //check the palindrome within start, end and populate it in the set
+  def isPalindrome(str: String,
+                   start: Int,
+                   end: Int,
+                   palindromes: Set[Pair]): Boolean = {
+    if (start > end) return false
+    else {
+      if (str.charAt(start) == str.charAt(end) && palindromes.contains(Pair(start + 1, end - 1))) return true
+      else return false
+    }
+  }
+
+  def longestPalindrome(str: String): String = {
+    // we scan for distance within elements as 0, 1, 2, 3 so on
+    val palindromes = Set.empty[Pair]
+    var maxLen = 0
+    var max: String = null
+
+    for (dist <- 0 until str.length) {
+      for (i <- 0 until str.length - dist) {
+        val start = i
+        val end = i + dist
+        if (isPalindrome(str, start, end, palindromes)) {
+          val len = end - start
+          if (len > maxLen) {
+            maxLen = len
+            max = str.substring(start, end)
+          }
+          palindromes += Pair(start, end)
+        }
+      }
+    }
+    return max
+  }
+
+  def isPalindromeLinear(str: String,
+                         memoize: Set[String]): Boolean = {
+    val len = str.length/2
+    var i = 0
+    while(i < len) {
+      val start = i
+      val end = str.length - i
+
+      if (str(start) == str(end)) {
+        i += 1
+
+      }
+      val substr = str.substring(start, end)
+      if (memoize.contains(substr)) return true
+      else {
+
+      }
+    }
+    ???
+  }
+
+  // 0 - 1 knapsack:
+  // Given weights and value of N items put them in a knapsack of
+  // capacity W so that the value is maximized
+  // value = Array(60, 100, 120)
+  // weight = Array(10, 20, 30)
+  // W = 50
+  // 10, 20, 30 base class remaining 40, 30, 20
+  // (10, 20) remaining 20 (20, 30) remaining 0
+  // (10, 30) => (10, 20) + 30 10 + (20, 30)
+
+  // Recursive: if I include 10, I can recurse with (20, 30), W - 10 and not include 10 to recurse with (20, 30) W
+  // returns the max weight
+
+  // We start with max index here and decrease it
+  import scala.math.max
+
+  // Recursive, Dynamic programming version is also possible
+  def knapsack(W: Int, values: Array[Int], weights: Array[Int], index: Int): Int = {
+    //Base case
+    if (index == 0 || W == 0) return 0
+
+    if (weights(index - 1) > W)
+      return knapsack(W, values, weights, index - 1)
+    else {
+      val withWeight = values(index - 1) + knapsack(W - weights(index - 1), values, weights, index - 1)
+      val withoutWeight = knapsack(W, values, weights, index - 1)
+      return max(withWeight, withoutWeight)
+    }
+  }
+
+  //
 }
