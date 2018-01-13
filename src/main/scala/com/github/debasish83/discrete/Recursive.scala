@@ -1,9 +1,7 @@
 package com.github.debasish83.discrete
 
-import java.util.Comparator
-
+import java.util.{ArrayList, Comparator}
 import org.apache.spark.ml.linalg.SparseVector
-
 import scala.collection.{immutable, mutable}
 import scala.collection.mutable.ArrayBuffer
 
@@ -146,6 +144,7 @@ object Recursive {
   //Algorithm: For each permutation generation we keep it in a hashMap so that the
   //duplicates can be avoided
   import java.util.HashMap
+
   def buildFreqTable(str: String): HashMap[Char, Int] = {
     val table = new HashMap[Char, Int]()
     str.foreach((c: Char) => {
@@ -213,7 +212,7 @@ object Recursive {
                      valid: Array[Char],
                      leftRem: Int,
                      rightRem: Int,
-                     index:Int): Unit = {
+                     index: Int): Unit = {
     //say we start with leftRem = 3, rightRem = 3
     //if leftRem < rightRem then we can continue to recurse
     //if leftRem > rightRem then we can't continue any further since the balancing criteria is broken
@@ -258,7 +257,7 @@ object Recursive {
   // leftRem = 3, rightRem = 3
   // '(' (2, 3)
   // (3, 2)
-  def isBalanced(chars: Array[Char], leftRem: Int, rightRem: Int, index: Int) : Boolean = {
+  def isBalanced(chars: Array[Char], leftRem: Int, rightRem: Int, index: Int): Boolean = {
     ???
   }
 
@@ -270,6 +269,7 @@ object Recursive {
     val index = 0
     isBalanced(parens, leftRem, rightRem, 0)
   }
+
   //Pain fill: given a screen, a point and a a colr, fill in the surrounding area till
   //the color changes from original color
   case class Color(r: Int, g: Int, b: Int)
@@ -279,7 +279,7 @@ object Recursive {
                 ncolor: Color): Boolean = {
     if (r < 0 || r >= screen.length || c < 0 || c >= screen(0).length) return false
 
-    if(screen(r)(c) == ocolor) {
+    if (screen(r)(c) == ocolor) {
       screen(r)(c) = ncolor
       paintFill(screen, r - 1, c, ocolor, ncolor) //up
       paintFill(screen, r + 1, c, ocolor, ncolor) //down
@@ -367,7 +367,7 @@ object Recursive {
     return ways
   }
 
-  def makeChange(n: Int) : Int = {
+  def makeChange(n: Int): Int = {
     val denoms = Array(25, 10, 5, 1)
     return makeChange(n, denoms, 0)
   }
@@ -412,7 +412,7 @@ object Recursive {
     Arrays.sort(boxes, new BoxComparator())
     var maxHeight = 0
     var i = 0
-    while(i < boxes.length) {
+    while (i < boxes.length) {
       val height = createStack(boxes, i)
       maxHeight = Math.max(maxHeight, height)
       i += 1
@@ -491,8 +491,49 @@ object Recursive {
     }
     maxlcs
   }
-}
 
+  // Find all the anagrams in a dictionary
+  // dictionary
+  // a b c d
+  // I have to make anagram of size 4
+  // index = 0
+  // a + f(index + 1, {b, c, d}) , b + f(index + 1, {a, c, d})
+
+  def generateAnagrams(chars: ArrayList[Char]): Array[String] = {
+    //TODO: Base case
+    if (chars.size == 1) return Array(new String(Array(chars.get(0))))
+
+    val buffer = new ArrayBuffer[String]()
+    for (i <- 0 until chars.size) {
+      val s = chars.get(i)
+      chars.remove(i)
+      val partials = generateAnagrams(chars)
+      partials.foreach(partial => {
+        buffer += s"$s$partial"
+      })
+      chars.add(i, s)
+    }
+    buffer.toArray
+  }
+
+  def generateAnagrams(str: String): Unit = {
+    val charList = new ArrayList[Char]()
+    str.foreach(charList.add(_))
+    //generate all anagrams of size len
+    val anagrams = generateAnagrams(charList)
+    anagrams.foreach(println(_))
+  }
+
+  //iterative version
+  //str: String
+  //Array(b, a, s, e, s)
+  //len = 1 b, a, s, e, s
+  //len = 2 b + {a, s, e, s}, a + {b, s, e, s}
+  //len = 3 bb, ba, bs, ...
+  def generateAnagramIter(str: String): Array[String] = {
+    ???
+  }
+}
 
 // dim is an array for the max dimensions this particular shape/tensor should support
 // Array(400, 60, 30)

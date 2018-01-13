@@ -41,4 +41,9 @@ class RecursiveSuite extends FunSuite with ShouldMatchers {
     assert(lcs2 === Array('a', 'b', 'c'))
   }
   */
+
+  test("anagrams") {
+    val chars = "bases"
+    Recursive.generateAnagrams(chars)
+  }
 }

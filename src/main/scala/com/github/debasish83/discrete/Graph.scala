@@ -258,8 +258,13 @@ import scala.collection.mutable.Seq
 
 class Trie {
 
-  class Node(val data: Int) {
+  //Here keep an ArrayList or a Seq over which we can run traversals
+  class Node(val data: Char) {
     val children: Seq[Node] = null
+
+    def getChild(char: Char): Node = {
+      ???
+    }
   }
 
   val head: Node = null
@@ -270,7 +275,8 @@ class Trie {
     }
   }
 
-  def find(str: String): Int = {
+  // find whether the str exist in the
+  def find(str: String): Boolean = {
     ???
   }
 }
