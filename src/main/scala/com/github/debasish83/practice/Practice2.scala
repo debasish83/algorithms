@@ -49,6 +49,7 @@ object Practice2 {
       add(str, index, root)
     }
 
+    //TODO: Use a stack based iterative algorithm
     def find(prefix: String,
              iter: Node,
              patterns: ArrayList[String]): Unit = {
