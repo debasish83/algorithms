@@ -47,3 +47,4 @@ class RecursiveSuite extends FunSuite with ShouldMatchers {
     Recursive.generateAnagrams(chars)
   }
 }
+

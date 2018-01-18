@@ -244,9 +244,9 @@ object DynamicProgramming {
   def findLongestEqual(elems: String): String = {
     val chars = elems.toCharArray
     var i = chars.length
-    while(i > 1) {
+    while (i > 1) {
       // We are finding the longest subarray first
-      for(j <- 0 until chars.length - i) {
+      for (j <- 0 until chars.length - i) {
         if (isEqual(chars, j, i))
           return elems.substring(j, i)
       }
@@ -459,9 +459,9 @@ object DynamicProgramming {
 
   def isPalindromeLinear(str: String,
                          memoize: Set[String]): Boolean = {
-    val len = str.length/2
+    val len = str.length / 2
     var i = 0
-    while(i < len) {
+    while (i < len) {
       val start = i
       val end = str.length - i
 
@@ -494,13 +494,14 @@ object DynamicProgramming {
   // We start with max index here and decrease it
   import scala.math.max
 
-  // Recursive, Dynamic programming version is also possible
+  // We start with W and then weight is decreased, so if we have entry in previous weight
+  // bucket we can use it, this algorithm is 2^n (exponential)
   def knapsack(W: Int, values: Array[Int], weights: Array[Int], index: Int): Int = {
-    //Base case
+    //Base:
     if (index == 0 || W == 0) return 0
 
-    if (weights(index - 1) > W)
-      return knapsack(W, values, weights, index - 1)
+    //if the item left is larger than current W, we can't use this item
+    if (weights(index - 1) > W) knapsack(W, values, weights, index - 1)
     else {
       val withWeight = values(index - 1) + knapsack(W - weights(index - 1), values, weights, index - 1)
       val withoutWeight = knapsack(W, values, weights, index - 1)
@@ -508,5 +509,17 @@ object DynamicProgramming {
     }
   }
 
-  //
+  // knapsack using dynamic program
+  // values: Array(60, 100, 120)
+  // weights: Array(10, 20, 30)
+  // W = 50
+  // What are the possibilities of doing
+
+  // index = 0 weightLeft = W - weights(0), value = values(0)
+  // index = 1 weightLeft = W - weight weightLeft
+  // index = 0, weight = W - weights(0), value = values(0)
+  // index = 1, weight =  , index(0)
+
+  //w 0 to W
+  //index 0 to n-1
 }
