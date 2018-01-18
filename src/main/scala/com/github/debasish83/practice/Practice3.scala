@@ -63,4 +63,97 @@ object Practice3 {
       }
     }
   }
+
+  def isSymmetric(elems: ArrayList[Int]): Boolean = {
+    //Check if elems and it's reverse are same with pointers
+    ???
+  }
+
+  import java.util.Comparator
+
+  //elems: 1, 1, 2
+  //f(1 , (1,2))
+  //f(1,  (1,2))
+  //f(2,  (1,1))
+
+  //elems: 1 2 4 3
+  //1, (2, 4, 3)
+  //2, (1, 4, 3)
+
+  //1, 2, 3, 2, 1
+  //2, 3,
+
+  //3
+  //(0,0) -> 1
+  //(1, 1) -> 2
+
+  // (1, 2, 3, 4) ->
+  class ArrayComparator extends Comparator[ArrayList[Int]] {
+    //1*10000 + 2 * 1000 +
+    //
+    override def compare(o1: ArrayList[Int], o2: ArrayList[Int]): Boolean = {
+      ???
+    }
+  }
+
+  //HashMap
+  //Key -> ArrayList(Value)
+  //hash(Key)
+
+  //key1, key2
+  //hash(key1) = hash1
+  //hash(key2) = hash1
+  //hash1 -> (value1, value2)
+  //hash1 -> (value1, ..., valuen)
+  //O(n) scan on values
+  // Java : Tree elems
+  // SortedList, BinarySearch
+
+  import scala.collection.mutable.Set
+
+  def getPermutations(elems: ArrayList[Int],
+                      pattern: ArrayList[Int],
+                      patterns: Set[ArrayList[Int]]): Unit = {
+    //Base
+    if (elems.size == 0) {
+      if (!patterns.contains(pattern)) {
+        patterns += pattern.clone().asInstanceOf[ArrayList[Int]]
+      }
+      return
+    }
+
+    // /Recursion
+    //index = 0
+    //curr = 1
+
+    //(1, 3, 2, 4)
+    //1, (3, 2, 4)
+    //3, (1, 2, 4)
+
+    // 1 3 2 1 3 4
+    for (i <- 0 until elems.size) {
+      val curr = elems.get(i)
+      pattern.add(curr)
+      elems.remove(i)
+      //Memoize to stop calling getPermutations
+      //pattern has partial pattern
+      //pattern: 1,3 (2)
+      //pattern: 1,3 (4)
+      getPermutations(elems, pattern, patterns)
+    }
+  }
+
+  //total elems: N
+  //N, N-1, N-2
+  //O(N^2*N)
+
+  import java.util.ArrayList
+
+  def getPermutations(elems: ArrayList[Int]): Boolean = {
+    val patterns = Set[ArrayList[Int]]()
+    val pattern = new ArrayList[Int]()
+    getPermutations(elems, pattern, patterns)
+    patterns.filter(isSymmetric(_))
+    ???
+  }
 }
