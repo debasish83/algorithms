@@ -69,8 +69,6 @@ object Practice3 {
     ???
   }
 
-  import java.util.Comparator
-
   //elems: 1, 1, 2
   //f(1 , (1,2))
   //f(1,  (1,2))
@@ -88,10 +86,9 @@ object Practice3 {
   //(1, 1) -> 2
 
   // (1, 2, 3, 4) ->
-  class ArrayComparator extends Comparator[ArrayList[Int]] {
+  class ArrayOrd extends Ordering[ArrayList[Int]] {
     //1*10000 + 2 * 1000 +
-    //
-    override def compare(o1: ArrayList[Int], o2: ArrayList[Int]): Boolean = {
+    override def compare(x: ArrayList[Int], y: ArrayList[Int]): Int = {
       ???
     }
   }
@@ -150,7 +147,10 @@ object Practice3 {
   import java.util.ArrayList
 
   def getPermutations(elems: ArrayList[Int]): Boolean = {
-    val patterns = Set[ArrayList[Int]]()
+    //SortedSet takes an comparator since it keeps the elements in an sorted order using
+    //Red-Black tree
+    //Set does not takes an comparator since each object implements a hash
+    val patterns = Set.empty[ArrayList[Int]]
     val pattern = new ArrayList[Int]()
     getPermutations(elems, pattern, patterns)
     patterns.filter(isSymmetric(_))
