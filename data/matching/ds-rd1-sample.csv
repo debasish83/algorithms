@@ -1,0 +1,21 @@
+invite_id,request_id,user_id.customer,user_id.provider,category_id,location_id,location,category,creation_time,sent_time,quote
+13912,2764,3764,764,1,4,"Dallas-Fort Worth-Arlington, TX",Photography,8/4/2013 10:39:54,8/4/2013 18:21:52,0
+5350,1057,2057,320,1,1,"New York-Newark-Jersey City, NY-NJ-PA",Photography,7/14/2013 1:03:37,7/14/2013 1:28:58,0
+17721,3554,4554,907,1,2,"Los Angeles-Long Beach-Anaheim, CA",Photography,8/14/2013 9:12:09,8/14/2013 12:32:40,1
+17723,3554,4554,141,1,2,"Los Angeles-Long Beach-Anaheim, CA",Photography,8/14/2013 9:12:09,8/14/2013 13:46:15,0
+18343,3680,4680,559,1,1,"New York-Newark-Jersey City, NY-NJ-PA",Photography,8/15/2013 4:36:22,8/15/2013 7:43:57,0
+4841,959,1959,12,1,2,"Los Angeles-Long Beach-Anaheim, CA",Photography,7/12/2013 17:13:00,7/12/2013 18:32:10,1
+17720,3554,4554,884,1,2,"Los Angeles-Long Beach-Anaheim, CA",Photography,8/14/2013 9:12:09,8/14/2013 9:43:47,0
+19209,3865,4865,141,1,2,"Los Angeles-Long Beach-Anaheim, CA",Photography,8/18/2013 23:25:23,8/19/2013 1:34:08,0
+4839,959,1959,884,1,2,"Los Angeles-Long Beach-Anaheim, CA",Photography,7/12/2013 17:13:00,7/12/2013 21:15:00,1
+12828,2555,3555,732,1,12,"Riverside-San Bernardino-Ontario, CA",Photography,8/1/2013 4:57:05,8/1/2013 6:49:55,0
+11992,2382,3382,237,1,9,"Atlanta-Sandy Springs-Roswell, GA",Photography,7/30/2013 1:08:50,7/30/2013 7:43:19,0
+10659,2117,3117,287,1,5,"Houston-The Woodlands-Sugar Land, TX",Photography,7/26/2013 12:55:27,7/27/2013 15:52:35,0
+14391,2866,3866,253,1,2,"Los Angeles-Long Beach-Anaheim, CA",Photography,8/5/2013 22:16:14,8/6/2013 0:04:04,1
+5891,1162,2162,475,1,1,"New York-Newark-Jersey City, NY-NJ-PA",Photography,7/15/2013 9:38:49,7/15/2013 16:02:45,1
+14682,2924,3924,253,1,4,"Dallas-Fort Worth-Arlington, TX",Photography,8/6/2013 20:57:56,8/6/2013 21:19:59,1
+14677,2924,3924,912,1,4,"Dallas-Fort Worth-Arlington, TX",Photography,8/6/2013 20:57:56,8/6/2013 21:36:26,1
+21814,4399,5399,884,1,2,"Los Angeles-Long Beach-Anaheim, CA",Photography,8/24/2013 18:39:01,8/24/2013 23:45:38,0
+11995,2382,3382,213,1,9,"Atlanta-Sandy Springs-Roswell, GA",Photography,7/30/2013 1:08:50,7/30/2013 3:35:12,0
+7231,1438,2438,912,1,31,"Las Vegas-Henderson-Paradise, NV",Photography,7/18/2013 15:03:11,7/18/2013 16:30:41,0
+7232,1438,2438,12,1,31,"Las Vegas-Henderson-Paradise, NV",Photography,7/18/2013 15:03:11,7/18/2013 15:35:04,1
