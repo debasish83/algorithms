@@ -12,7 +12,7 @@ object Practice4 {
 
     class GraphException extends Exception
 
-    for(i <- 0 until words.length) {
+    for (i <- 0 until words.length) {
       val str = words(i)
       // Adding the edges in reverse order
       var k = str.length - 1
@@ -95,17 +95,18 @@ object Practice4 {
         val node = iter.next()
         //If the node is not visited then start a sort with the specific node
         if (!visited(node)) {
+          println(s"start topological sort ${node}")
           topologicalSort(node, visited, stack)
         }
       }
       val buf = new ArrayBuffer[Char]
-      while (stack.isEmpty) {
-        buf += (stack.pop() + min).toChar
+      while (!stack.isEmpty) {
+        buf += (stack.pop + min).toChar
       }
       buf.toArray
     }
   }
-
+  
   import java.util.ArrayList
 
   //000101
